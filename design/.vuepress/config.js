@@ -28,6 +28,7 @@ module.exports = {
     sidebar: [
       "/",
       "/api/token",
+      "/api/upload",
       "/api/home",
       "/api/daily",
       "/api/invite",
