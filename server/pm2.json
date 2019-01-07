@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "yanzhi",
+      "script": "./dist/app.js",
+      "args": [],
+      "watch": ["dist"],
+      "ignore_watch": ["test"],
+      "env": {
+        "NODE_ENV": "product"
+      },
+      "node_args": "--harmony",
+      "merge_logs": true,
+      "cwd": "./"
+    }
+  ]
+}
