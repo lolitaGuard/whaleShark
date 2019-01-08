@@ -4,9 +4,14 @@ export interface IErr {
 }
 
 export class ErrCode {
+  // 正确
+  static noErr: IErr = { code: -1, message: "" };
+  // 500错
+  static internalErr: IErr = { code: 500, message: "服务器内部错" };
   // 通用
   static invalidToken: IErr = { code: 800, message: "非法token" };
   static getOpenIdFail: IErr = { code: 801, message: "获取openid失败" };
+  static getTokenFail: IErr = { code: 802, message: "获取token失败" };
   // 用户
   static notLogin: IErr = { code: 900, message: "用户未登录" };
   static userExists: IErr = { code: 901, message: "用户已经存在" };

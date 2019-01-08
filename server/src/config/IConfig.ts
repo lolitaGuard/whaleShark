@@ -56,6 +56,12 @@ interface IConfig {
     // 密码
     pass: string;
   };
+
+  // jwt
+  jwt: {
+    secret: string;
+    prefix: string;
+  };
 }
 
 export default IConfig;

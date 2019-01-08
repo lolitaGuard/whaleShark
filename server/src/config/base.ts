@@ -48,7 +48,13 @@ let conf: IConfig = {
   // 注册获得的point
   regPoint: 1,
   // 注册获得的coin
-  regCoin: 0
+  regCoin: 0,
+
+  // jwt
+  jwt: {
+    secret: "sannian",
+    prefix: "Bearer "
+  }
 };
 
 export default conf;

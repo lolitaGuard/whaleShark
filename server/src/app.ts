@@ -3,8 +3,8 @@ import * as Https from "https";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as fs from "fs";
-import * as path from "path";
-
+import * as jwt from "express-jwt";
+import { ErrCode } from "./errCode";
 import loger from "./logIns";
 import config from "./config";
 
@@ -48,6 +48,19 @@ class Main {
       );
       next();
     });
+
+    // token
+    app.use(
+      "/user/",
+      jwt({ secret: config.jwt.secret }),
+      (err, req: express.Request, res: express.Response, next) => {
+        if (err) {
+          res.status(500).json(ErrCode.invalidToken);
+          return;
+        }
+        next();
+      }
+    );
 
     // 路由
     httpRouteHandle(app);
