@@ -54,35 +54,24 @@ export default class FavService {
    * @param favItem 收藏的信息
    * @returns 是否收藏成功
    */
-  async fav(favItem: IFav): Promise<boolean> {
-    let rst: boolean;
-
-    // 是否已经收藏
-    let item = await db.mongo
-      .getCollection("fav")
-      .findOne({ dailyId: favItem.dailyId });
-    if (item) {
-      return false;
-    }
-
+  async fav(favItem: IFav): Promise<void> {
     await db.mongo.getCollection("fav").insertOne(favItem);
-
-    rst = true;
-    return rst;
   }
 
   // 取消收藏
-  async unfav(dailyId: string): Promise<boolean> {
+  async unfav(dailyId: string): Promise<void> {
+    await db.mongo.getCollection("fav").deleteOne({ dailyId });
+  }
+
+  async isFav(dailyId: string): Promise<boolean> {
     let rst: boolean;
-    // 是否已经收藏
+
     let item = await db.mongo.getCollection("fav").findOne({ dailyId });
     if (!item) {
       return false;
     }
 
-    await db.mongo.getCollection("fav").deleteOne({ dailyId });
-
     rst = true;
-    return rst;
+    return;
   }
 }

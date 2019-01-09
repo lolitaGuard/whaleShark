@@ -43,9 +43,7 @@ export default class FollowService {
   }
 
   // 关注
-  async follow(userId: string, followId: string): Promise<boolean> {
-    let rst: boolean;
-
+  async follow(userId: string, followId: string): Promise<void> {
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
 
     // 判断状态
@@ -62,14 +60,10 @@ export default class FollowService {
     await db.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { status }, { upsert: true });
-
-    rst = true;
-    return rst;
   }
 
   // 取消关注
-  async unfollow(userId: string, followId: string): Promise<boolean> {
-    let rst: boolean;
+  async unfollow(userId: string, followId: string): Promise<void> {
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
 
     // 判断状态
@@ -86,9 +80,6 @@ export default class FollowService {
     await db.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { status }, { upsert: true });
-
-    rst = true;
-    return rst;
   }
 
   // 是否已经关注
