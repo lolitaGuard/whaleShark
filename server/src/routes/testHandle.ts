@@ -1,5 +1,5 @@
 import * as express from "express";
-import Database from "../db";
+import Database from "../mongo";
 
 export default function handle(app: express.Express) {
   // 测试

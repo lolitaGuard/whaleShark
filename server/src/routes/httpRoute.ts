@@ -2,7 +2,7 @@ import * as express from "express";
 
 import config from "../config";
 import loger from "../logIns";
-import Database from "../db";
+import Database from "../mongo";
 import TokerService from "../service/tokenService";
 
 // 路由

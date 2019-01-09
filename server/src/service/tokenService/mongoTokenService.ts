@@ -1,5 +1,5 @@
 import config from "../../config";
-import Database from "../../db";
+import Database from "../../mongo";
 import * as mongodb from "mongodb";
 import IToken from "./IToken";
 import ITokenService from "./ITokenService";

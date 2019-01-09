@@ -5,7 +5,6 @@ enum eStatus {
   open,
   close
 }
-
 export default class Database {
   private connectStr: string;
   private dbName: string;

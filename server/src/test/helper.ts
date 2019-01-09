@@ -1,8 +1,8 @@
-import Database from "../db";
+import Database from "../mongo";
 import TokenService from "../service/tokenService";
 import axios from "axios";
 import config from "../config";
-import RedisDb from "../redisDb";
+import RedisDb from "../redis";
 
 let db: Database;
 let redisDb: RedisDb;

@@ -1,4 +1,4 @@
-import RedisDb from "../../redisDb";
+import RedisDb from "../../redis";
 import * as handyRedis from "handy-redis";
 import * as keys from "../../redisKeys";
 import config from "../../config";

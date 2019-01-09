@@ -1,5 +1,5 @@
 import config from "./config";
-import Database from "./db";
+import Database from "./mongo";
 
 // *** 存放一些通用方法 ***
 
