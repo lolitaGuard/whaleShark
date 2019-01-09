@@ -11,9 +11,13 @@ export let price = (userId: string, priceName: string) =>
 // 用户约玩状态
 export let inviteStatus = (userId: string) => `inviteStatus#${userId}`;
 
-// 关注
-export let followList = (userId: string, pageIndex: number, pageSize: number) =>
-  `followList#${userId}#${pageIndex}#${pageSize}`;
+// 关注列表
+export let followList = (userId: string, pageIndex: number) =>
+  `followList#${userId}#${pageIndex}`;
+
+// 收藏列表
+export let favList = (userId: string, pageIndex: number) =>
+  `favList#${userId}#${pageIndex}`;
 
 // 用户签到标记
 export let userSign = (userId: string, day: string) =>

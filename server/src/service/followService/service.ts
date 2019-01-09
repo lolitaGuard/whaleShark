@@ -25,7 +25,7 @@ export default class FollowService {
   ): Promise<IFollow[]> {
     let rst: IFollow[];
 
-    let key = keys.followList(userId, pageIndex, pageSize);
+    let key = keys.followList(userId, pageIndex);
     if (!(await db.redis.exists(key))) {
       let list: IFollow[] = await db.mongo
         .getCollection("follow")
@@ -43,7 +43,7 @@ export default class FollowService {
   }
 
   // 关注
-  async Follow(userId: string, followId: string): Promise<boolean> {
+  async follow(userId: string, followId: string): Promise<boolean> {
     let rst: boolean;
 
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
@@ -68,7 +68,7 @@ export default class FollowService {
   }
 
   // 取消关注
-  async Unfollow(userId: string, followId: string): Promise<boolean> {
+  async unfollow(userId: string, followId: string): Promise<boolean> {
     let rst: boolean;
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
 
