@@ -1,8 +1,7 @@
 import MongoDb from "../../mongo";
 import { IHandyRedis } from "handy-redis";
-import dbs from "../../dbManager";
+import db from "../../dbManager";
 import * as keys from "../../redisKeys";
-import { json } from "body-parser";
 
 import IUserInfo from "./iUserInfo";
 import IPriceItem from "./iPriceItem";
@@ -17,8 +16,6 @@ export default class UserService {
   static async getInstance(): Promise<UserService> {
     if (!UserService.ins) {
       let ins = (UserService.ins = new UserService());
-      ins.mongo = dbs.mongo;
-      ins.redis = dbs.redis;
     }
     return UserService.ins;
   }
@@ -35,16 +32,16 @@ export default class UserService {
   async getUserInfo(userId: string): Promise<IUserInfo> {
     let rst: IUserInfo;
     let key = keys.user(userId);
-    if (!(await this.redis.exists(key))) {
-      let userInfo = (await this.mongo
+    if (!(await db.redis.exists(key))) {
+      let userInfo = (await db.mongo
         .getCollection("user")
         .findOne({ userId })) as IUserInfo;
       if (userInfo) {
-        await this.redis.set(key, JSON.stringify(userInfo));
+        await db.redis.set(key, JSON.stringify(userInfo));
       }
     }
 
-    rst = JSON.parse(await this.redis.get(key));
+    rst = JSON.parse(await db.redis.get(key));
     return rst;
   }
 
@@ -56,12 +53,12 @@ export default class UserService {
    */
   async setUserInfo(userId: string, userInfo: IUserInfo): Promise<boolean> {
     let rst: boolean;
-    this.mongo
+    db.mongo
       .getCollection("user")
       .updateOne({ userId }, userInfo, { upsert: true });
 
     let key = keys.user(userId);
-    this.redis.set(key, JSON.stringify(userInfo));
+    db.redis.set(key, JSON.stringify(userInfo));
 
     rst = true;
     return rst;
@@ -76,15 +73,15 @@ export default class UserService {
   async getPrice(userId: string, priceName: string): Promise<number> {
     let rst: number;
     let key: string = keys.price(userId, priceName);
-    if (!(await this.redis.exists(key))) {
-      let priceItem: IPriceItem = await this.mongo
+    if (!(await db.redis.exists(key))) {
+      let priceItem: IPriceItem = await db.mongo
         .getCollection("price")
         .findOne({ userId, priceName });
       let price: number = priceItem ? priceItem.price : -1;
-      this.redis.set(key, price.toString());
+      db.redis.set(key, price.toString());
     }
 
-    rst = parseInt(await this.redis.get(key));
+    rst = parseInt(await db.redis.get(key));
     return rst;
   }
 
@@ -104,7 +101,7 @@ export default class UserService {
   ): Promise<boolean> {
     let rst: boolean;
 
-    this.mongo.getCollection("price").updateOne(
+    db.mongo.getCollection("price").updateOne(
       { userId, priceName },
       {
         price
@@ -113,7 +110,7 @@ export default class UserService {
     );
 
     let key: string = keys.price(userId, priceName);
-    await this.redis.set(key, price.toString());
+    await db.redis.set(key, price.toString());
 
     rst = true;
     return rst;
@@ -130,17 +127,17 @@ export default class UserService {
     let rst: boolean;
 
     let key = keys.inviteStatus(userId);
-    if (!(await this.redis.exists(key))) {
-      let item: IInviteStatus = await this.mongo
+    if (!(await db.redis.exists(key))) {
+      let item: IInviteStatus = await db.mongo
         .getCollection("inviteStatus")
         .findOne({ userId });
 
       let status: boolean = item ? item.status : false;
 
-      await this.redis.set(key, +status + "");
+      await db.redis.set(key, +status + "");
     }
 
-    rst = (await this.redis.get(key)) === "true" ? true : false;
+    rst = (await db.redis.get(key)) === "true" ? true : false;
 
     return rst;
   }
@@ -154,12 +151,12 @@ export default class UserService {
   async setInviteStatus(userId: string, status: boolean): Promise<boolean> {
     let rst: boolean;
 
-    this.mongo
+    db.mongo
       .getCollection("inviteStatus")
       .updateOne({ userId }, { status }, { upsert: true });
 
     let key = keys.inviteStatus(userId);
-    await this.redis.set(key, status + "");
+    await db.redis.set(key, status + "");
 
     rst = true;
     return rst;
