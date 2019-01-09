@@ -1,5 +1,4 @@
 import Database from "../mongo";
-import TokenService from "../service/tokenService";
 import axios from "axios";
 import config from "../config";
 import RedisDb from "../redis";
@@ -48,8 +47,7 @@ let close = async () => {
 
 let getAxios = async () => {
   // token service
-  let service = await TokenService.getIns();
-  let { token } = await service.bind(config.mockOpenId);
+  let token = "";
   return axios.create({
     baseURL: config.apiPrefix + ":" + config.port,
     headers: { token }

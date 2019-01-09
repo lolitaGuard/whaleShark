@@ -59,6 +59,9 @@ interface IConfig {
 
   // jwt
   jwt: {
+    /**
+     * jsonwebtoken密钥
+     */
     secret: string;
     prefix: string;
   };

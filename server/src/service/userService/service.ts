@@ -1,6 +1,6 @@
 import MongoDb from "../../mongo";
 import { IHandyRedis } from "handy-redis";
-import getDbs from "../../dbManager";
+import dbs from "../../dbManager";
 import * as keys from "../../redisKeys";
 import { json } from "body-parser";
 
@@ -17,7 +17,6 @@ export default class UserService {
   static async getInstance(): Promise<UserService> {
     if (!UserService.ins) {
       let ins = (UserService.ins = new UserService());
-      let dbs = await getDbs();
       ins.mongo = dbs.mongo;
       ins.redis = dbs.redis;
     }

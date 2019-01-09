@@ -41,5 +41,8 @@
     "mocha": "^5.2.0",
     "mongodb": "^3.0.1",
     "power-assert": "^1.6.0"
+  },
+  "directories": {
+    "test": "dist/test"
   }
 }

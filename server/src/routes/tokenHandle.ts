@@ -20,7 +20,7 @@ export default function handle(app: express.Express) {
     }
     let now: number = Date.now();
     let expires: number = now + config.tokenExpires;
-    let info = { openId, expires };
+    let info = { userId: openId, expires };
     let token: string = config.jwt.prefix + jwtService.sign(info);
     rst = { token, expires };
     res.json(rst);

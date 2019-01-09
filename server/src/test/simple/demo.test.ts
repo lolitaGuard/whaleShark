@@ -1,34 +1,27 @@
-// import * as assert from "assert";
-// import assert = require ("assert");
-var assert = require('power-assert');
-describe('demo', () => {
-  it('plus', () => {
+import assert = require("assert");
+describe("demo", () => {
+  it("plus", () => {
     let fn = (a, b) => a + b;
     assert(fn(1, 2) === 3);
   });
 
-
-  it('async', async () => {
+  it("async", async () => {
     assert(1 == 1);
   });
 
-
-  it('promise', async () => {
+  it("promise", async () => {
     return new Promise(resolve => {
       setTimeout(() => {
         assert(2 == 2);
         resolve();
-      }, 1000);
+      }, 100);
     });
   });
 
-  it('callback', cb => {
+  it("callback", cb => {
     setTimeout(() => {
       assert(3 === 3);
       cb();
     });
   });
-
- 
-
 });

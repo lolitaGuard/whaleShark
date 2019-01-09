@@ -4,18 +4,13 @@ import * as handyRedis from "handy-redis";
 
 let mongo: MongoDb;
 let redis: handyRedis.IHandyRedis;
-interface IDbCollection {
-  mongo: MongoDb;
-  redis: handyRedis.IHandyRedis;
-}
 
-async function getIns(): Promise<IDbCollection> {
-  mongo = mongo || (await MongoDb.getIns());
-  redis = redis || (await RedisDb.getIns()).db;
-  return {
-    mongo,
-    redis
-  };
-}
+MongoDb.getIns().then(db => {
+  mongo = db;
+});
 
-export default getIns;
+RedisDb.getIns().then(({ db }) => {
+  redis = db;
+});
+
+export default { mongo, redis };
