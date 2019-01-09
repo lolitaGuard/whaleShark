@@ -4,7 +4,6 @@ import db from "../../dbManager";
 import * as keys from "../../redisKeys";
 
 import IFav from "./iFav";
-import { FindOneOptions } from "mongodb";
 
 export default class FavService {
   private static ins: FavService;

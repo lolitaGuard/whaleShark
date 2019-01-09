@@ -20,9 +20,5 @@ export let favList = (userId: string, pageIndex: number) =>
   `favList#${userId}#${pageIndex}`;
 
 // 用户签到标记
-export let userSign = (userId: string, day: string) =>
-  `user#sign#${userId}#${day}`;
-
-// 用户转发标记
-export let userInvite = (userId: string, day: string) =>
-  `user#invite#${userId}#${day}`;
+export let sign = (userId: string, year: number, month: number, date: number) =>
+  `sign#${userId}#${year}#${month}#${date}`;
