@@ -65,6 +65,17 @@ interface IConfig {
     secret: string;
     prefix: string;
   };
+
+  oss: {
+    region: string;
+    bucket: string;
+    accessKeyId: string;
+    accessKeySecret: string;
+    // 域名前缀
+    prefix: string;
+    // 文件夹
+    dir: string;
+  };
 }
 
 export default IConfig;
