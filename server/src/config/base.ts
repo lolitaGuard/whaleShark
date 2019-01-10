@@ -66,6 +66,12 @@ let conf: IConfig = {
     prefix: "https://mucheng2020.oss-cn-hangzhou.aliyuncs.com",
     // 文件夹
     dir: "labs"
+  },
+
+  // recommend
+  recommend: {
+    citys: ["all", "北京", "上海", "广州"],
+    pageIndexMax: 5
   }
 };
 

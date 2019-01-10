@@ -5,8 +5,8 @@ import * as Stream from "stream";
 export default class UploadService {
   private static ins: UploadService;
   /**
-   * 获取FavService实例
-   * @returns Promise<FavService>
+   * 获取UploadService实例
+   * @returns Promise<UploadService>
    */
   static async getInstance(): Promise<UploadService> {
     if (!UploadService.ins) {

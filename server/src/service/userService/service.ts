@@ -129,7 +129,7 @@ export default class UserService {
     let key = keys.inviteStatus(userId);
     if (!(await db.redis.exists(key))) {
       let item: IInviteStatus = await db.mongo
-        .getCollection("inviteStatus")
+        .getCollection("user")
         .findOne({ userId });
 
       let status: boolean = item ? item.status : false;
@@ -152,7 +152,7 @@ export default class UserService {
     let rst: boolean;
 
     db.mongo
-      .getCollection("inviteStatus")
+      .getCollection("user")
       .updateOne({ userId }, { status }, { upsert: true });
 
     let key = keys.inviteStatus(userId);

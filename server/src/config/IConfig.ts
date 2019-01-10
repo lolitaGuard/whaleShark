@@ -76,6 +76,13 @@ interface IConfig {
     // 文件夹
     dir: string;
   };
+
+  recommend: {
+    // 缓存的city列表
+    citys: string[];
+    // 最大的缓存页数
+    pageIndexMax: number;
+  };
 }
 
 export default IConfig;

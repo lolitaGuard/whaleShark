@@ -1,6 +1,10 @@
 // flag
 export let flag = (key: string) => `flag#${key}`;
 
+// 推荐列表
+export let recommendList = (city: string, pageIndex: number) =>
+  `recommend#${city}#${pageIndex}`;
+
 // 用户信息
 export let user = (userId: string) => `user#${userId}`;
 
