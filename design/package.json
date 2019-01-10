@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npx vuepress dev",
+    "dev": "npx vuepress dev",
     "build": "npx vuepress build",
     "publish": "sh deploy.sh"
   },

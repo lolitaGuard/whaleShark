@@ -1,13 +1,15 @@
 # 用户
 
-## 设置基本信息
+## 获取基本信息
 
 ### request
 
-`POST` `/user/setting/`
+`GET` `/user/info/:userId/`
+
+### response
 
 ```typescript
-interface ISettingReq {
+interface IInfoReq {
   // 昵称
   nickname: string;
   // 性别
@@ -20,6 +22,49 @@ interface ISettingReq {
   wx: string;
   // qq
   qq: string;
+}
+```
+
+## 设置基本信息
+
+### request
+
+`POST` `/user/info/`
+
+```typescript
+interface IInfoReq {
+  // 昵称
+  nickname: string;
+  // 性别
+  gender: number;
+  // 生年
+  birthYear: number;
+  // 城市
+  city: string;
+  // 微信
+  wx: string;
+  // qq
+  qq: string;
+}
+```
+
+## 获取约玩项和价格
+
+### request
+
+`GET` `/user/invite/setting/:userId/`
+
+### response
+
+```typescript
+interface IInviteSettingReq {
+  list: {
+    // 约玩名称
+    // 约电影,约线上游戏,约旅游,约聚餐,约其他
+    type: "movie" | "game online" | "travel" | "dinner" | "other";
+    // 价格
+    price: number;
+  }[];
 }
 ```
 
@@ -40,7 +85,7 @@ interface IInviteSettingReq {
 }
 ```
 
-## 获取当前约玩的开关状态
+## 获取约玩状态
 
 ### request
 
@@ -55,7 +100,7 @@ interface IInviteStatusReq {
 }
 ```
 
-## 开关约玩
+## 设置约玩状态
 
 ### request
 

@@ -14,7 +14,7 @@ interface IRecommendReq {
   // 是否开启线下约玩
   // true表示只搜索有线下约玩的女生
   // false表示所有
-  isOffline: boolean;
+  isInvite: boolean;
 }
 ```
 
