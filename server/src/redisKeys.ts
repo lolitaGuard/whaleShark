@@ -5,6 +5,16 @@ export let flag = (key: string) => `flag#${key}`;
 export let recommendList = (city: string, pageIndex: number) =>
   `recommend#${city}#${pageIndex}`;
 
+// 日记
+// 用户日记的基本统计信息
+export let dailyCount = (userId: string) => `dailycount#${userId}`;
+
+// 用户日记列表
+export let dailyList = (userId: string, pageIndex: number) =>
+  `daliyList#${userId}#${pageIndex}`;
+
+// ----------------------------------------------------------------
+
 // 用户信息
 export let user = (userId: string) => `user#${userId}`;
 
