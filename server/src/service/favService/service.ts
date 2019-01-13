@@ -42,13 +42,18 @@ export default class FavService extends BaseService {
       (!(await this.redis.exists(key)) && pageIndex === 0) ||
       pageIndex !== 0
     ) {
-      let list: IFav[] = await this.mongo
+      let list: IFav[] = (await this.mongo
         .getCollection("fav")
+        // .aggregate([{$project:{favId:'$_id'}}])
         .find({ userId })
-        // .project({ _id: "favId" })
+        // .project({ _id: 0, upvote: 0 })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
-        .toArray();
+        .toArray()).map(n => {
+        n.favId = n._id.toString();
+        delete n.id;
+        return n;
+      });
       if (pageIndex === 0) {
         await this.redis.set(key, JSON.stringify(list));
         await this.redis.expire(key, HOUR);

@@ -54,6 +54,7 @@ describe("favService", async () => {
       userId: "tong",
       dailyId: "0001"
     });
+    // console.log(data);
     assert(!!data);
   });
 
@@ -133,6 +134,7 @@ describe("favService", async () => {
       await serviceIns.fav(item);
     }
 
+    // console.log(await serviceIns.getFavList("tong", 0, 5));
     // 1
     assert((await serviceIns.getFavList("tong", 0, 5)).length === 5);
     assert((await serviceIns.getFavList("tong", 1, 5)).length === 5);
