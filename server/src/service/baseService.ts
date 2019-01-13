@@ -7,7 +7,7 @@ export default class BaseService {
   mongo: Mongo;
   redis: IHandyRedis;
 
-  async initDbs() {
+  protected async initDbs() {
     this.mongo = await Mongo.getIns();
     this.redis = (await Redis.getIns()).db;
   }

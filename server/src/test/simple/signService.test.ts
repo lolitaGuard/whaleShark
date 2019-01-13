@@ -1,6 +1,6 @@
 import assert = require("assert");
 import helper from "../helper";
-import getDbs from "../../dbManager";
+import { openDbs } from "../../dbManager";
 import Mongo from "../../mongo";
 import { IHandyRedis, ICreateHandyClient } from "handy-redis";
 
@@ -11,7 +11,7 @@ describe("signService", async () => {
   let serviceIns: SignService;
 
   before(async function async() {
-    let db = await getDbs();
+    let db = await openDbs();
     mongo = db.mongo;
     redis = db.redis;
 
@@ -24,6 +24,7 @@ describe("signService", async () => {
   });
 
   after(async function() {
+    console.log("sign test - after");
     await helper.closeDbs();
   });
 

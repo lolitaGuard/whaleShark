@@ -75,6 +75,6 @@ export default class FavService extends BaseService {
     }
 
     rst = true;
-    return;
+    return rst;
   }
 }

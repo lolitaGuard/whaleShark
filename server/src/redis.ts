@@ -18,33 +18,42 @@ class RedisDb extends EventEmitter {
   static async getIns(): Promise<RedisDb> {
     let ins = (RedisDb.ins = RedisDb.ins || new RedisDb());
     if (ins.status === eStatus.close) {
-      ins.connect();
+      await ins.connect();
     }
     return ins;
   }
 
   private constructor() {
     super();
-    this.connect();
+    this.status = eStatus.close;
   }
 
-  connect() {
-    this.db = redis.createHandyClient(config.redis.port, config.redis.host, {
-      password: config.redis.pass
+  connect(): Promise<boolean> {
+    return new Promise(resolve => {
+      this.db = redis.createHandyClient(config.redis.port, config.redis.host, {
+        password: config.redis.pass
+      });
+      this.db.redis.on("connect", () => {
+        this.status = eStatus.open;
+        resolve(true);
+      });
     });
-    this.status = eStatus.open;
   }
 
   close(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      // this.db.end(true);
-      // this.db.on("end", () => {
-      //   console.log("redis client close");
-      //   resolve(true);
+      this.db.quit().then(value => {
+        console.log("on quit:", value);
+        this.status = eStatus.close;
+        resolve(true);
+      });
+      // this.db.redis.end(true);
+      // this.db.redis.quit(() => {
+      //   console.log("redis quit");
       // });
-      this.db.quit();
-      this.status = eStatus.close;
-      resolve(true);
+      // this.db.redis.on("end", () => {
+      //   console.log("redis client close");
+      // });
     });
   }
 }

@@ -1,6 +1,9 @@
+import EFavType from "./eFavType";
 export default interface IFav {
   // 收藏编号
   favId?: string;
+  // 收藏者用户编号
+  userId: string;
   // 日记编号
   dailyId: string;
   // logo
@@ -12,7 +15,7 @@ export default interface IFav {
   // 文本
   content: string;
   // 类型
-  type: "audio" | "video" | "photo";
+  type: EFavType;
   // 投币数量
   upvote: number;
   // 收藏数量
