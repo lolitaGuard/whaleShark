@@ -6,7 +6,7 @@ import { IHandyRedis, ICreateHandyClient } from "handy-redis";
 
 import SignService from "../../service/signService";
 
-describe("dailyService", async () => {
+describe("signService", async () => {
   let mongo: Mongo, redis: IHandyRedis;
   let serviceIns: SignService;
 
