@@ -1,13 +1,12 @@
-import MongoDb from "../../mongo";
-import { IHandyRedis } from "handy-redis";
-import db from "../../dbManager";
+import { ObjectId } from "mongodb";
+import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IUserInfo from "./iUserInfo";
 import IPriceItem from "./iPriceItem";
 import IInviteStatus from "./iInviteStatus";
 
-export default class UserService {
+export default class UserService extends BaseService {
   private static ins: UserService;
   /**
    * 获取UserService实例
@@ -16,13 +15,14 @@ export default class UserService {
   static async getInstance(): Promise<UserService> {
     if (!UserService.ins) {
       let ins = (UserService.ins = new UserService());
+      await ins.initDbs();
     }
     return UserService.ins;
   }
 
-  mongo: MongoDb;
-  redis: IHandyRedis;
-  private constructor() {}
+  private constructor() {
+    super();
+  }
 
   /**
    * 获取基本信息
@@ -32,16 +32,16 @@ export default class UserService {
   async getUserInfo(userId: string): Promise<IUserInfo> {
     let rst: IUserInfo;
     let key = keys.user(userId);
-    if (!(await db.redis.exists(key))) {
-      let userInfo = (await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let userInfo = (await this.mongo
         .getCollection("user")
         .findOne({ userId })) as IUserInfo;
       if (userInfo) {
-        await db.redis.set(key, JSON.stringify(userInfo));
+        await this.redis.set(key, JSON.stringify(userInfo));
       }
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
     return rst;
   }
 
@@ -53,12 +53,12 @@ export default class UserService {
    */
   async setUserInfo(userId: string, userInfo: IUserInfo): Promise<boolean> {
     let rst: boolean;
-    db.mongo
+    this.mongo
       .getCollection("user")
       .updateOne({ userId }, userInfo, { upsert: true });
 
     let key = keys.user(userId);
-    db.redis.set(key, JSON.stringify(userInfo));
+    this.redis.set(key, JSON.stringify(userInfo));
 
     rst = true;
     return rst;
@@ -73,15 +73,15 @@ export default class UserService {
   async getPrice(userId: string, priceName: string): Promise<number> {
     let rst: number;
     let key: string = keys.price(userId, priceName);
-    if (!(await db.redis.exists(key))) {
-      let priceItem: IPriceItem = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let priceItem: IPriceItem = await this.mongo
         .getCollection("price")
         .findOne({ userId, priceName });
       let price: number = priceItem ? priceItem.price : -1;
-      db.redis.set(key, price.toString());
+      this.redis.set(key, price.toString());
     }
 
-    rst = parseInt(await db.redis.get(key));
+    rst = parseInt(await this.redis.get(key));
     return rst;
   }
 
@@ -101,7 +101,7 @@ export default class UserService {
   ): Promise<boolean> {
     let rst: boolean;
 
-    db.mongo.getCollection("price").updateOne(
+    this.mongo.getCollection("price").updateOne(
       { userId, priceName },
       {
         price
@@ -110,7 +110,7 @@ export default class UserService {
     );
 
     let key: string = keys.price(userId, priceName);
-    await db.redis.set(key, price.toString());
+    await this.redis.set(key, price.toString());
 
     rst = true;
     return rst;
@@ -127,17 +127,17 @@ export default class UserService {
     let rst: boolean;
 
     let key = keys.inviteStatus(userId);
-    if (!(await db.redis.exists(key))) {
-      let item: IInviteStatus = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let item: IInviteStatus = await this.mongo
         .getCollection("user")
         .findOne({ userId });
 
       let status: boolean = item ? item.status : false;
 
-      await db.redis.set(key, +status + "");
+      await this.redis.set(key, +status + "");
     }
 
-    rst = (await db.redis.get(key)) === "true" ? true : false;
+    rst = (await this.redis.get(key)) === "true" ? true : false;
 
     return rst;
   }
@@ -151,12 +151,12 @@ export default class UserService {
   async setInviteStatus(userId: string, status: boolean): Promise<boolean> {
     let rst: boolean;
 
-    db.mongo
+    this.mongo
       .getCollection("user")
       .updateOne({ userId }, { status }, { upsert: true });
 
     let key = keys.inviteStatus(userId);
-    await db.redis.set(key, status + "");
+    await this.redis.set(key, status + "");
 
     rst = true;
     return rst;

@@ -1,6 +1,5 @@
-import MongoDb from "../../mongo";
-import { IHandyRedis } from "handy-redis";
-import db from "../../dbManager";
+import { ObjectId } from "mongodb";
+import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IFollow from "./iFollow";
@@ -8,13 +7,17 @@ import EFollowStatus from "./eFollowStatus";
 import Database from "../../mongo";
 import { stat } from "fs";
 
-export default class FollowService {
+export default class FollowService extends BaseService {
   private static ins: FollowService;
   async getInstance(): Promise<FollowService> {
     if (!FollowService.ins) {
       FollowService.ins = new FollowService();
     }
     return FollowService.ins;
+  }
+
+  private constructor() {
+    super();
   }
 
   // 获取关注列表
@@ -26,18 +29,18 @@ export default class FollowService {
     let rst: IFollow[];
 
     let key = keys.followList(userId, pageIndex);
-    if (!(await db.redis.exists(key))) {
-      let list: IFollow[] = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let list: IFollow[] = await this.mongo
         .getCollection("follow")
         .find({ userId })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
         .toArray();
 
-      await db.redis.set(key, JSON.stringify(list));
+      await this.redis.set(key, JSON.stringify(list));
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
 
     return rst;
   }
@@ -57,7 +60,7 @@ export default class FollowService {
       return;
     }
 
-    await db.mongo
+    await this.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { status }, { upsert: true });
   }
@@ -77,7 +80,7 @@ export default class FollowService {
       status = EFollowStatus.followMe;
     }
 
-    await db.mongo
+    await this.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { status }, { upsert: true });
   }
@@ -111,7 +114,7 @@ export default class FollowService {
   ): Promise<EFollowStatus> {
     let rst: EFollowStatus;
 
-    let follow = await db.mongo
+    let follow = await this.mongo
       .getCollection("follow")
       .findOne({ userId, followId });
 

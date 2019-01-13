@@ -1,6 +1,5 @@
-import MongoDb from "../../mongo";
-import { IHandyRedis } from "handy-redis";
-import db from "../../dbManager";
+import { ObjectId } from "mongodb";
+import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IRecommendFilter from "./iRecommendFilter";
@@ -9,7 +8,7 @@ import { DBRef } from "bson";
 import { FilterQuery } from "mongodb";
 import { json } from "body-parser";
 
-export default class RecommendService {
+export default class RecommendService extends BaseService {
   private static ins: RecommendService;
   /**
    * 获取RecommendService实例
@@ -18,10 +17,14 @@ export default class RecommendService {
   static async getInstance(): Promise<RecommendService> {
     if (!RecommendService.ins) {
       let ins = (RecommendService.ins = new RecommendService());
+      await ins.initDbs();
     }
     return RecommendService.ins;
   }
 
+  private constructor() {
+    super();
+  }
   /**
    * 获取推荐列表
    * @param filter 过滤器
@@ -47,17 +50,17 @@ export default class RecommendService {
       query.status = true;
     }
 
-    if (!(await db.redis.exists(key))) {
-      let data = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let data = await this.mongo
         .getCollection("user")
         .find(query)
         .skip(pageIndex * pageSize)
         .limit(pageSize);
 
-      await db.redis.set(key, JSON.stringify(data));
+      await this.redis.set(key, JSON.stringify(data));
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
     return rst;
   }
 }

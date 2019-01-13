@@ -1,48 +1,31 @@
-import Database from "../mongo";
 import axios from "axios";
 import config from "../config";
-import RedisDb from "../redis";
+import Mongo from "../mongo";
+import Redis from "../redis";
+import getDbs from "../dbManager";
 
-let db: Database;
-let redisDb: RedisDb;
 let clearAll = async () => {
-  await open();
-  await Promise.all(
-    ["user", "upvote", "list", "reward", "memory", "token", "gallery"].map(
-      async n => {
-        await db.getCollection(n).deleteMany({});
-      }
-    )
-  );
-
+  let { mongo, redis } = await getDbs();
+  // mongo
+  {
+    let colltions = ["daily", "fav", "follow", "invite", "sign", "user"];
+    await Promise.all(
+      colltions.map(async n => {
+        await mongo.getCollection(n).deleteMany({});
+      })
+    );
+  }
   // redis
   {
-    let service = (await RedisDb.getIns()).db;
-    await service.flushall();
+    await redis.flushall();
   }
 };
 
-let clearToken = async () => {
-  await open();
-  await db.getCollection("token").deleteMany({});
-  // {
-  //   let service = await RedisDb.getIns();
-  //   let keys = [
-  //     ...(await service.keys("token#*")),
-  //     ...(await service.keys("openId#*"))
-  //   ];
-  //   await service.del(keys);
-  // }
-};
+let closeDbs = async () => {
+  let { mongo, redis } = await getDbs();
 
-let open = async () => {
-  db = await Database.getIns();
-  redisDb = await RedisDb.getIns();
-};
-
-let close = async () => {
-  await db.close();
-  await redisDb.close();
+  await mongo.close();
+  await redis.quit();
 };
 
 let getAxios = async () => {
@@ -66,15 +49,12 @@ let delay = (ms: number = 500) => {
 
 export default {
   clearAll,
-  open,
-  close,
+  closeDbs,
 
   // get axios instance
   // with token
   getAxios,
 
-  // clean token
-  clearToken,
-
-  delay
+  delay,
+  getDbs
 };

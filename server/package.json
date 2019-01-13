@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run clean  && tsc",
-    "start": "npm run build && npx cross-env NODE_ENV=dev node ./dist/app.js",
+    "start": "npx cross-env NODE_ENV=dev node ./dist/app.js",
     "initDb": "node ./initDb",
     "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/**/*.test.js",
     "test-redis": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/redis/**/*.test.js",

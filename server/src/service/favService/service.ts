@@ -1,11 +1,10 @@
-import MongoDb from "../../mongo";
-import { IHandyRedis } from "handy-redis";
-import db from "../../dbManager";
+import { ObjectId } from "mongodb";
+import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IFav from "./iFav";
 
-export default class FavService {
+export default class FavService extends BaseService {
   private static ins: FavService;
   /**
    * 获取FavService实例
@@ -14,10 +13,14 @@ export default class FavService {
   static async getInstance(): Promise<FavService> {
     if (!FavService.ins) {
       let ins = (FavService.ins = new FavService());
+      await ins.initDbs();
     }
     return FavService.ins;
   }
 
+  private constructor() {
+    super();
+  }
   /**
    * 获取收藏列表
    * @param userId 用户编号
@@ -33,18 +36,18 @@ export default class FavService {
     let rst: IFav[];
 
     let key = keys.followList(userId, pageIndex);
-    if (!(await db.redis.exists(key))) {
-      let list: IFav[] = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let list: IFav[] = await this.mongo
         .getCollection("fav")
         .find({ userId })
         .project({ _id: "favId" })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
         .toArray();
-      await db.redis.set(key, JSON.stringify(list));
+      await this.redis.set(key, JSON.stringify(list));
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
 
     return rst;
   }
@@ -55,18 +58,18 @@ export default class FavService {
    * @returns 是否收藏成功
    */
   async fav(favItem: IFav): Promise<void> {
-    await db.mongo.getCollection("fav").insertOne(favItem);
+    await this.mongo.getCollection("fav").insertOne(favItem);
   }
 
   // 取消收藏
   async unfav(dailyId: string): Promise<void> {
-    await db.mongo.getCollection("fav").deleteOne({ dailyId });
+    await this.mongo.getCollection("fav").deleteOne({ dailyId });
   }
 
   async isFav(dailyId: string): Promise<boolean> {
     let rst: boolean;
 
-    let item = await db.mongo.getCollection("fav").findOne({ dailyId });
+    let item = await this.mongo.getCollection("fav").findOne({ dailyId });
     if (!item) {
       return false;
     }

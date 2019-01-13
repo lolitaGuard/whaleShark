@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
-import db from "../../dbManager";
+import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IDailyCount from "./iDailyCount";
 import IDailyItem from "./iDailyItem";
 import IDailyUploadContent from "./iDailyUploadContent";
 
-export default class DailyService {
+export default class DailyService extends BaseService {
   private static ins: DailyService;
   /**
    * 获取DailyService实例
@@ -15,11 +15,14 @@ export default class DailyService {
   static async getInstance(): Promise<DailyService> {
     if (!DailyService.ins) {
       let ins = (DailyService.ins = new DailyService());
+      await ins.initDbs();
     }
     return DailyService.ins;
   }
 
-  //
+  private constructor() {
+    super();
+  }
 
   /**
    * 颜值日记统计信息
@@ -30,14 +33,14 @@ export default class DailyService {
     let rst: IDailyCount;
 
     let key: string = keys.dailyCount(userId);
-    if (!(await db.redis.exists(key))) {
-      let data: IDailyCount = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let data: IDailyCount = await this.mongo
         .getCollection("user")
         .findOne({ userId });
-      await db.redis.set(key, JSON.stringify(data));
+      await this.redis.set(key, JSON.stringify(data));
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
 
     return rst;
   }
@@ -51,17 +54,17 @@ export default class DailyService {
     let rst: IDailyItem[];
 
     let key: string = keys.dailyList(userId, pageIndex);
-    if (!(await db.redis.exists(key))) {
-      let data: IDailyItem[] = await db.mongo
+    if (!(await this.redis.exists(key))) {
+      let data: IDailyItem[] = await this.mongo
         .getCollection("daily")
         .find({ userId })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
         .toArray();
-      await db.redis.set(key, JSON.stringify(data));
+      await this.redis.set(key, JSON.stringify(data));
     }
 
-    rst = JSON.parse(await db.redis.get(key));
+    rst = JSON.parse(await this.redis.get(key));
 
     return rst;
   }
@@ -73,7 +76,7 @@ export default class DailyService {
    * @returns Promise
    */
   async upload(userId: string, content: IDailyUploadContent): Promise<void> {
-    await db.mongo.getCollection("daily").insertOne({
+    await this.mongo.getCollection("daily").insertOne({
       userId,
       ...content,
       upvote: 0,
@@ -85,28 +88,28 @@ export default class DailyService {
 
   // 删除日记
   async remove(dailyId: string): Promise<void> {
-    await db.mongo.getCollection("daily").deleteOne({
+    await this.mongo.getCollection("daily").deleteOne({
       dailyId
     });
   }
 
   // 增加点赞
   async upvote(dailyId: string): Promise<void> {
-    await db.mongo
+    await this.mongo
       .getCollection("daily")
       .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { upvote: 1 } });
   }
 
   // 增加收藏
   async fav(dailyId: string): Promise<void> {
-    await db.mongo
+    await this.mongo
       .getCollection("daily")
       .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { fav: 1 } });
   }
 
   // 增加转发
   async share(dailyId: string): Promise<void> {
-    await db.mongo
+    await this.mongo
       .getCollection("daily")
       .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { share: 1 } });
   }

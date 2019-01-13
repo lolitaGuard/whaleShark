@@ -2,15 +2,14 @@ import MongoDb from "./mongo";
 import RedisDb from "./redis";
 import * as handyRedis from "handy-redis";
 
-let mongo: MongoDb;
-let redis: handyRedis.IHandyRedis;
+let getDbs = async () => {
+  let mongo: MongoDb;
+  let redis: handyRedis.IHandyRedis;
 
-MongoDb.getIns().then(db => {
-  mongo = db;
-});
+  mongo = await MongoDb.getIns();
+  redis = (await RedisDb.getIns()).db;
 
-RedisDb.getIns().then(({ db }) => {
-  redis = db;
-});
+  return { mongo, redis };
+};
 
-export default { mongo, redis };
+export default getDbs;
