@@ -1,3 +1,4 @@
+import { HOUR } from "../../constant";
 import { ObjectId } from "mongodb";
 import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
@@ -23,6 +24,7 @@ export default class FavService extends BaseService {
   }
   /**
    * 获取收藏列表
+   * 只有第0页会被缓存到redis
    * @param userId 用户编号
    * @param pageIndex 页码
    * @param pageSize 每页个数
@@ -35,18 +37,26 @@ export default class FavService extends BaseService {
   ): Promise<IFav[]> {
     let rst: IFav[];
 
-    let key = keys.followList(userId, pageIndex);
-    if (!(await this.redis.exists(key))) {
+    let key = keys.favList(userId, pageIndex);
+    if (
+      (!(await this.redis.exists(key)) && pageIndex === 0) ||
+      pageIndex !== 0
+    ) {
       let list: IFav[] = await this.mongo
         .getCollection("fav")
         .find({ userId })
-        .project({ _id: "favId" })
+        // .project({ _id: "favId" })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
         .toArray();
-      await this.redis.set(key, JSON.stringify(list));
+      if (pageIndex === 0) {
+        await this.redis.set(key, JSON.stringify(list));
+        await this.redis.expire(key, HOUR);
+      }
+      return list;
     }
 
+    // console.log(await this.redis.keys("*"));
     rst = JSON.parse(await this.redis.get(key));
 
     return rst;

@@ -4,6 +4,7 @@ import { openDbs } from "../../dbManager";
 import Mongo from "../../mongo";
 import { IHandyRedis, ICreateHandyClient } from "handy-redis";
 
+import * as keys from "../../redisKeys";
 import SignService from "../../service/signService";
 
 describe("signService", async () => {
@@ -41,7 +42,8 @@ describe("signService", async () => {
       timestamp: number = 0,
       coin = 1;
     await serviceIns.sign(userId, year, month, date, timestamp, coin);
-    //
+
+    // mongo
     let data = await mongo.getCollection("sign").findOne({ userId });
     assert(data.userId === "tongjinle" && data.coin === 1);
   });
@@ -53,11 +55,13 @@ describe("signService", async () => {
   // 1.存在2000-1-1的用户名为tong的记录
   // 2.不存在2000-1-2的用户名为tong的记录
   // 3.不存在2000-1-1的用户名为jin的记录
-
+  // 4.redis中可以读取
   it("是否已经签到", async function() {
     await serviceIns.sign("tong", 2000, 1, 1, 0, 1);
     assert(await serviceIns.isSign("tong", 2000, 1, 1));
     assert(!(await serviceIns.isSign("tong", 2000, 1, 2)));
     assert(!(await serviceIns.isSign("jin", 2000, 1, 1)));
+
+    assert(redis.exists(keys.sign("tong", 2000, 1, 1)));
   });
 });

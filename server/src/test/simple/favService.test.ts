@@ -3,7 +3,7 @@ import helper from "../helper";
 import { openDbs } from "../../dbManager";
 import Mongo from "../../mongo";
 import { IHandyRedis, ICreateHandyClient } from "handy-redis";
-
+import * as keys from "../../redisKeys";
 import FavService from "../../service/favService";
 import IFav from "../../service/favService/iFav";
 import EFavType from "../../service/favService/eFavType";
@@ -114,7 +114,8 @@ describe("favService", async () => {
   // process:
   // 增加20条记录,其中10条记录的userId是'tong'
   // check:
-  // 每页5条记录,查看第0页和第1页都应该是5条记录,查看第2页为0条记录
+  // 1. 每页5条记录,查看第0页和第1页都应该是5条记录,查看第2页为0条记录
+  // 2. 第0页会被缓存,其他页不会
   it("收藏列表", async function() {
     for (let i = 0; i < 20; i++) {
       let item: IFav = {
@@ -132,8 +133,13 @@ describe("favService", async () => {
       await serviceIns.fav(item);
     }
 
+    // 1
     assert((await serviceIns.getFavList("tong", 0, 5)).length === 5);
     assert((await serviceIns.getFavList("tong", 1, 5)).length === 5);
     assert((await serviceIns.getFavList("tong", 2, 5)).length === 0);
+
+    // 2
+    assert(!!(await redis.exists(keys.favList("tong", 0))));
+    assert(!(await redis.exists(keys.favList("tong", 1))));
   });
 });
