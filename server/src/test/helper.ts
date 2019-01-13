@@ -8,17 +8,18 @@ let clearAll = async () => {
   let { mongo, redis } = await getDbs();
   // mongo
   {
-    let colltions = ["daily", "fav", "follow", "invite", "sign", "user"];
+    // let colltions = ["daily", "fav", "follow", "invite", "sign", "user"];
+    let colltions = ["fav", "user"];
     await Promise.all(
       colltions.map(async n => {
-        await mongo.getCollection(n).deleteMany({});
+        return mongo.getCollection(n).deleteMany({});
       })
     );
   }
-  // redis
-  {
-    await redis.flushall();
-  }
+  // // redis
+  // {
+  //   await redis.flushall();
+  // }
 };
 
 let closeDbs = async () => {
