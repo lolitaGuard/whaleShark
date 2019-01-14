@@ -20,7 +20,7 @@ export default interface IDaily {
   // 投币数量
   upvote: number;
   // 收藏数量
-  favorite: number;
+  fav: number;
   // 转发数量
   share: number;
 }

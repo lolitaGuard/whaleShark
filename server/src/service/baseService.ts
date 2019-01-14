@@ -15,4 +15,10 @@ export default class BaseService {
   protected toObjectId(id: string) {
     return new ObjectId(id);
   }
+
+  protected renameId(n: any, name: string) {
+    n[name] = n._id.toString();
+    delete n._id;
+    return n;
+  }
 }

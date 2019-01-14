@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { HOUR } from "../../constant";
 import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
@@ -53,14 +53,21 @@ export default class DailyService extends BaseService {
     let rst: IDaily[];
 
     let key: string = keys.dailyList(userId, pageIndex);
-    if (!(await this.redis.exists(key))) {
-      let data: IDaily[] = await this.mongo
+    if (
+      (!(await this.redis.exists(key)) && pageIndex === 0) ||
+      pageIndex !== 0
+    ) {
+      let list: IDaily[] = (await this.mongo
         .getCollection("daily")
         .find({ userId })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
-        .toArray();
-      await this.redis.set(key, JSON.stringify(data));
+        .toArray()).map(n => this.renameId(n, "dailyId"));
+      if (pageIndex === 0) {
+        await this.redis.set(key, JSON.stringify(list));
+        await this.redis.expire(key, HOUR);
+      }
+      return list;
     }
 
     rst = JSON.parse(await this.redis.get(key));
@@ -89,20 +96,41 @@ export default class DailyService extends BaseService {
   async upvote(dailyId: string): Promise<void> {
     await this.mongo
       .getCollection("daily")
-      .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { upvote: 1 } });
+      .updateOne({ _id: this.toObjectId(dailyId) }, { $inc: { upvote: 1 } });
   }
 
   // 增加收藏
   async fav(dailyId: string): Promise<void> {
     await this.mongo
       .getCollection("daily")
-      .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { fav: 1 } });
+      .updateOne({ _id: this.toObjectId(dailyId) }, { $inc: { fav: 1 } });
+  }
+
+  // 取消收藏
+  async unfav(dailyId: string): Promise<void> {
+    await this.mongo
+      .getCollection("daily")
+      .updateOne({ _id: this.toObjectId(dailyId) }, { $inc: { fav: -1 } });
   }
 
   // 增加转发
   async share(dailyId: string): Promise<void> {
     await this.mongo
       .getCollection("daily")
-      .updateOne({ _id: new ObjectId(dailyId) }, { $inc: { share: 1 } });
+      .updateOne({ _id: this.toObjectId(dailyId) }, { $inc: { share: 1 } });
+  }
+
+  // 查找一个日记的详情
+  async find(dailyId: string): Promise<IDaily> {
+    let rst: IDaily;
+    let data = await this.mongo
+      .getCollection("daily")
+      .findOne({ _id: this.toObjectId(dailyId) });
+    if (data) {
+      data.dailyId = data._id.toString();
+      delete data._id;
+      rst = data;
+    }
+    return rst;
   }
 }

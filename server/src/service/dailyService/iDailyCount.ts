@@ -7,6 +7,10 @@ export default interface IDailyCount {
   upvote: number;
   // 被关注/粉丝(总数)
   follow: number;
+  // 收藏(总数)
+  fav: number;
+  // 转发(总数)
+  share: number;
   // 热度
   hot: number;
   // 约玩(总数)

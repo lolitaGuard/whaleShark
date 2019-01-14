@@ -1,5 +1,4 @@
 import { HOUR } from "../../constant";
-import { ObjectId } from "mongodb";
 import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
@@ -49,11 +48,7 @@ export default class FavService extends BaseService {
         // .project({ _id: 0, upvote: 0 })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
-        .toArray()).map(n => {
-        n.favId = n._id.toString();
-        delete n.id;
-        return n;
-      });
+        .toArray()).map(n => this.renameId(n, "favId"));
       if (pageIndex === 0) {
         await this.redis.set(key, JSON.stringify(list));
         await this.redis.expire(key, HOUR);
