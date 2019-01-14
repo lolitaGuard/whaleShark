@@ -3,8 +3,7 @@ import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
 import IDailyCount from "./iDailyCount";
-import IDailyItem from "./iDailyItem";
-import IDailyUploadContent from "./iDailyUploadContent";
+import IDaily from "./iDaily";
 
 export default class DailyService extends BaseService {
   private static ins: DailyService;
@@ -50,12 +49,12 @@ export default class DailyService extends BaseService {
     userId: string,
     pageIndex: number,
     pageSize: number
-  ): Promise<IDailyItem[]> {
-    let rst: IDailyItem[];
+  ): Promise<IDaily[]> {
+    let rst: IDaily[];
 
     let key: string = keys.dailyList(userId, pageIndex);
     if (!(await this.redis.exists(key))) {
-      let data: IDailyItem[] = await this.mongo
+      let data: IDaily[] = await this.mongo
         .getCollection("daily")
         .find({ userId })
         .skip(pageIndex * pageSize)
@@ -75,21 +74,14 @@ export default class DailyService extends BaseService {
    * @param  {IDailyUploadContent} content 日记内容
    * @returns Promise
    */
-  async upload(userId: string, content: IDailyUploadContent): Promise<void> {
-    await this.mongo.getCollection("daily").insertOne({
-      userId,
-      ...content,
-      upvote: 0,
-      share: 0,
-      favorite: 0,
-      timestamp: Date.now()
-    });
+  async upload(daily: IDaily): Promise<void> {
+    await this.mongo.getCollection("daily").insertOne(daily);
   }
 
   // 删除日记
   async remove(dailyId: string): Promise<void> {
     await this.mongo.getCollection("daily").deleteOne({
-      dailyId
+      _id: this.toObjectId(dailyId)
     });
   }
 

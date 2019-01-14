@@ -1,8 +1,10 @@
 import EDailyUrlType from "./eDailyUrlType";
 
-export default interface IDailyItem {
+export default interface IDaily {
   // 日记编号
-  dailyId: string;
+  dailyId?: string;
+  // 用户编号
+  userId: string;
   // logo
   logoUrl: string;
   // 昵称
@@ -13,6 +15,8 @@ export default interface IDailyItem {
   content: string;
   // 类型
   type: EDailyUrlType;
+  // 资源url
+  urlList: string[];
   // 投币数量
   upvote: number;
   // 收藏数量

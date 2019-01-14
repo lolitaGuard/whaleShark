@@ -11,4 +11,8 @@ export default class BaseService {
     this.mongo = await Mongo.getIns();
     this.redis = (await Redis.getIns()).db;
   }
+
+  protected toObjectId(id: string) {
+    return new ObjectId(id);
+  }
 }
