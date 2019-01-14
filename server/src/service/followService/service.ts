@@ -6,12 +6,14 @@ import IFollow from "./iFollow";
 import EFollowStatus from "./eFollowStatus";
 import Database from "../../mongo";
 import { stat } from "fs";
+import { formatWithOptions } from "util";
 
 export default class FollowService extends BaseService {
   private static ins: FollowService;
-  async getInstance(): Promise<FollowService> {
+  static async getInstance(): Promise<FollowService> {
     if (!FollowService.ins) {
-      FollowService.ins = new FollowService();
+      let ins = (FollowService.ins = new FollowService());
+      await ins.initDbs();
     }
     return FollowService.ins;
   }
@@ -62,7 +64,7 @@ export default class FollowService extends BaseService {
 
     await this.mongo
       .getCollection("follow")
-      .updateOne({ userId, followId }, { status }, { upsert: true });
+      .updateOne({ userId, followId }, { $set: { status } }, { upsert: true });
   }
 
   // 取消关注
@@ -82,7 +84,7 @@ export default class FollowService extends BaseService {
 
     await this.mongo
       .getCollection("follow")
-      .updateOne({ userId, followId }, { status }, { upsert: true });
+      .updateOne({ userId, followId }, { $set: { status } }, { upsert: true });
   }
 
   // 是否已经关注
@@ -98,7 +100,8 @@ export default class FollowService extends BaseService {
 
     let status = await this.getFollowStatus(userId, followId);
 
-    rst = status !== EFollowStatus.none;
+    rst =
+      status === EFollowStatus.followHim || status === EFollowStatus.followEach;
     return rst;
   }
 
@@ -118,11 +121,25 @@ export default class FollowService extends BaseService {
       .getCollection("follow")
       .findOne({ userId, followId });
 
-    if (!follow) {
+    let otherFollow = await this.mongo.getCollection("follow").findOne({
+      userId: followId,
+      followId: userId
+    });
+
+    if (!follow && !otherFollow) {
       return EFollowStatus.none;
     }
 
-    rst = follow.status;
+    if (follow && !otherFollow) {
+      return EFollowStatus.followHim;
+    }
+
+    if (!follow && otherFollow) {
+      return EFollowStatus.followMe;
+    }
+    if (follow && otherFollow) {
+      return EFollowStatus.followEach;
+    }
 
     return rst;
   }
