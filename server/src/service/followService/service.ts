@@ -22,8 +22,25 @@ export default class FollowService extends BaseService {
     super();
   }
 
+  private async getFollowList(
+    userId: string,
+    statusList: EFollowStatus[],
+    pageIndex: number,
+    pageSize: number
+  ): Promise<IFollow[]> {
+    let rst: IFollow[];
+    let list: IFollow[] = await this.mongo
+      .getCollection("follow")
+      .find({ userId, status: { $in: statusList } })
+      .skip(pageIndex * pageSize)
+      .limit(pageSize)
+      .toArray();
+    rst = list;
+    return rst;
+  }
+
   // 获取关注列表
-  async getFollowList(
+  async list(
     userId: string,
     pageIndex: number,
     pageSize: number
@@ -32,12 +49,16 @@ export default class FollowService extends BaseService {
 
     let key = keys.followList(userId, pageIndex);
     if (!(await this.redis.exists(key))) {
-      let list: IFollow[] = await this.mongo
-        .getCollection("follow")
-        .find({ userId })
-        .skip(pageIndex * pageSize)
-        .limit(pageSize)
-        .toArray();
+      let list: IFollow[] = await this.getFollowList(
+        userId,
+        [
+          EFollowStatus.followEach,
+          EFollowStatus.followHim,
+          EFollowStatus.followMe
+        ],
+        pageIndex,
+        pageSize
+      );
 
       await this.redis.set(key, JSON.stringify(list));
     }
@@ -50,26 +71,39 @@ export default class FollowService extends BaseService {
   // 关注
   async follow(userId: string, followId: string): Promise<void> {
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
-
+    let otherStatus: EFollowStatus;
     // 判断状态
     if (EFollowStatus.none === status) {
       status = EFollowStatus.followHim;
+      otherStatus = EFollowStatus.followMe;
     } else if (EFollowStatus.followMe === status) {
       status = EFollowStatus.followEach;
+      otherStatus = EFollowStatus.followEach;
     } else if (EFollowStatus.followHim === status) {
       return;
     } else if (EFollowStatus.followEach === status) {
       return;
     }
 
+    // 修改自己的status
     await this.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { $set: { status } }, { upsert: true });
+
+    // 修改被follow方的status
+    await this.mongo
+      .getCollection("follow")
+      .updateOne(
+        { userId: followId, followId: userId },
+        { $set: { status: otherStatus } },
+        { upsert: true }
+      );
   }
 
   // 取消关注
   async unfollow(userId: string, followId: string): Promise<void> {
     let status: EFollowStatus = await this.getFollowStatus(userId, followId);
+    let otherStatus: EFollowStatus;
 
     // 判断状态
     if (EFollowStatus.none === status) {
@@ -78,13 +112,25 @@ export default class FollowService extends BaseService {
       return;
     } else if (EFollowStatus.followHim === status) {
       status = EFollowStatus.none;
+      otherStatus = EFollowStatus.none;
     } else if (EFollowStatus.followEach === status) {
       status = EFollowStatus.followMe;
+      otherStatus = EFollowStatus.followHim;
     }
 
+    // 修改自己的status
     await this.mongo
       .getCollection("follow")
       .updateOne({ userId, followId }, { $set: { status } }, { upsert: true });
+
+    // 修改被follow方的status
+    await this.mongo
+      .getCollection("follow")
+      .updateOne(
+        { userId: followId, followId: userId },
+        { $set: { status: otherStatus } },
+        { upsert: true }
+      );
   }
 
   // 是否已经关注
@@ -117,13 +163,16 @@ export default class FollowService extends BaseService {
   ): Promise<EFollowStatus> {
     let rst: EFollowStatus;
 
-    let follow = await this.mongo
-      .getCollection("follow")
-      .findOne({ userId, followId });
+    let follow = await this.mongo.getCollection("follow").findOne({
+      userId,
+      followId,
+      status: { $in: [EFollowStatus.followHim, EFollowStatus.followEach] }
+    });
 
     let otherFollow = await this.mongo.getCollection("follow").findOne({
       userId: followId,
-      followId: userId
+      followId: userId,
+      status: { $in: [EFollowStatus.followHim, EFollowStatus.followEach] }
     });
 
     if (!follow && !otherFollow) {

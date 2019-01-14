@@ -13,6 +13,15 @@ describe("followService", async () => {
   let mongo: Mongo, redis: IHandyRedis;
   let serviceIns: FollowService;
 
+  async function showData() {
+    console.log(
+      await mongo
+        .getCollection("follow")
+        .find()
+        .toArray()
+    );
+  }
+
   before(async function async() {
     let db = await openDbs();
     mongo = db.mongo;
@@ -39,9 +48,11 @@ describe("followService", async () => {
     await serviceIns.follow("tong", "zst");
 
     assert(
-      !!(await mongo
-        .getCollection("follow")
-        .findOne({ userId: "tong", followId: "zst" }))
+      !!(await mongo.getCollection("follow").findOne({
+        userId: "tong",
+        followId: "zst",
+        status: EFollowStatus.followHim
+      }))
     );
   });
 
@@ -54,10 +65,10 @@ describe("followService", async () => {
   it("取消关注", async function() {
     await serviceIns.follow("tong", "zst");
     await serviceIns.unfollow("tong", "zst");
-
-    let data: IFollow = await mongo
-      .getCollection("follow")
-      .findOne({ userId: "tong", followId: "zst" });
+    let data: IFollow = await mongo.getCollection("follow").findOne({
+      userId: "tong",
+      followId: "zst"
+    });
 
     assert(!data || data.status === EFollowStatus.none);
   });
@@ -123,4 +134,35 @@ describe("followService", async () => {
   });
 
   // 获取关注列表
+  // process:
+  // 1. 'tong'关注了'zst'
+  // 2. 'tong'关注了'sannian'
+  // 3. 'sannian'关注了'tong'
+  // 4. 'wy'关注了'tong'
+  // check:
+  // 1. 'tong'和'zst',followHim
+  // 2. 'tong'和'sannian',followEach
+  // 3. 'tong'和'wy',followMe
+  // 4. 能查到列表长度为3
+  it("获取关注列表", async function() {
+    await serviceIns.follow("tong", "zst");
+    await serviceIns.follow("tong", "sannian");
+    await serviceIns.follow("sannian", "tong");
+    await serviceIns.follow("wy", "tong");
+
+    let data: IFollow[] = await serviceIns.list("tong", 0, 5);
+    assert(
+      data.find(fo => fo.userId === "tong" && fo.followId === "zst").status ==
+        EFollowStatus.followHim
+    );
+    assert(
+      data.find(fo => fo.userId === "tong" && fo.followId === "sannian")
+        .status == EFollowStatus.followEach
+    );
+    assert(
+      data.find(fo => fo.userId === "tong" && fo.followId === "wy").status ==
+        EFollowStatus.followMe
+    );
+    assert(data.length === 3);
+  });
 });
