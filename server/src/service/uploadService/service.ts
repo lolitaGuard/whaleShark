@@ -15,7 +15,7 @@ export default class UploadService {
     return UploadService.ins;
   }
 
-  client: OSS;
+  private client: OSS;
 
   constructor() {
     this.client = new OSS(config.oss);
@@ -31,7 +31,7 @@ export default class UploadService {
     let rst: string;
     await this.client.putStream(config.oss.dir + "/" + remoteName, stream);
 
-    rst = config.oss.prefix + "/" + remoteName;
+    rst = config.oss.prefix + "/" + config.oss.dir + "/" + remoteName;
     return rst;
   }
 }
