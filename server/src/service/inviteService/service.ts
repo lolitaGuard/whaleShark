@@ -1,9 +1,7 @@
 import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
-import IInviteApply from "./iInviteApply";
 import IInvite from "./iInvite";
-import IInviteDetail from "./iInviteDetail";
 import EInivteAction from "./eInviteAction";
 import EInviteStatus from "./eInviteStatus";
 
@@ -191,9 +189,6 @@ export default class InviteService extends BaseService {
   // clear cache
   private async clearCache(userId: string): Promise<void> {
     let pattern: string = keys.inviteListOfSomeone(userId);
-    let keyList: string[] = await this.redis.keys(pattern);
-    if (keyList && keyList.length > 0) {
-      await this.redis.del(...keyList);
-    }
+    this.clearCache(pattern);
   }
 }
