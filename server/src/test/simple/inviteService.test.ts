@@ -211,4 +211,20 @@ describe("dailyService", async function() {
     );
     assert(data && data.length === 0);
   });
+
+  // 约玩列表-guest也可以查阅到
+  // process:
+  // 1. tong对zst发起申请
+  // check:
+  // 1. 通过zst也可以查到这个申请
+  it("约玩列表-guest也可以查阅到", async function() {
+    await createInvite("tong", "zst");
+    let data: IInvite[] = await serviceIns.list(
+      "zst",
+      [EInviteStatus.apply],
+      0,
+      5
+    );
+    assert(data && data.length === 1);
+  });
 });

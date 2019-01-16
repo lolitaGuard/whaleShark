@@ -45,7 +45,10 @@ export default class InviteService extends BaseService {
     let fetch = async () =>
       await this.mongo
         .getCollection("invite")
-        .find({ userId, status: { $in: statusList } })
+        .find({
+          $or: [{ userId }, { guestId: userId }],
+          status: { $in: statusList }
+        })
         .skip(pageIndex * pageSize)
         .limit(pageSize)
         .toArray();
