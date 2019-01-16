@@ -49,5 +49,5 @@ export default {
   getAxios,
 
   delay,
-  getDbs: openDbs
+  openDbs
 };

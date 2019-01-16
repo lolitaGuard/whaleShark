@@ -1,4 +1,4 @@
-export default interface IInviteRequest {
+export default interface IInviteApply {
   // 邀请者
   userId: string;
   // 被邀请者

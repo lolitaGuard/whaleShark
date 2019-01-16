@@ -8,7 +8,7 @@
     "start": "npx cross-env NODE_ENV=dev node ./dist/app.js",
     "initDb": "node ./initDb",
     "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/**/*.test.js",
-    "test:current": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/uploadService.test.js",
+    "test:current": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/inviteService.test.js",
     "test-redis": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/redis/**/*.test.js",
     "start-test-server": "cross-env NODE_ENV=test node ./dist/app",
     "test-handle": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/*.test.js",
