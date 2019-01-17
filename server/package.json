@@ -10,7 +10,7 @@
     "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/**/*.test.js",
     "test:invite": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/inviteService.test.js",
     "test:user": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/userService.test.js",
-    "start-test-server": "cross-env NODE_ENV=test node ./dist/app",
+    "start-test-server": "npx pm2 start pm2-test.json",
     "test-handle": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/*.test.js",
     "clean": "rm -rf dist/*"
   },
@@ -43,6 +43,7 @@
     "log4js": "^1.1.0",
     "mocha": "^5.2.0",
     "mongodb": "^3.0.1",
+    "pm2": "^3.2.8",
     "power-assert": "^1.6.0"
   },
   "directories": {

@@ -3,6 +3,7 @@ import config from "../config";
 import Mongo from "../mongo";
 import Redis from "../redis";
 import { openDbs, closeDbs } from "../dbManager";
+import JwtService from "../service/jwtService";
 
 let clearAll = async () => {
   let { mongo, redis } = await openDbs();
@@ -21,9 +22,12 @@ let clearAll = async () => {
   }
 };
 
-let getAxios = async () => {
+let getAxiosWithToken = async (userId: string) => {
   // token service
-  let token = "";
+  let token: string = JwtService.sign({
+    userId,
+    expires: new Date(2999, 0, 1).getTime()
+  });
   return axios.create({
     baseURL: config.apiPrefix + ":" + config.port,
     headers: { token }
@@ -46,7 +50,7 @@ export default {
 
   // get axios instance
   // with token
-  getAxios,
+  getAxios: getAxiosWithToken,
 
   delay,
   openDbs

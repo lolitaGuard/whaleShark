@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "测试服务器",
+      "script": "./dist/app.js",
+      "args": [],
+      "watch": ["dist"],
+      "ignore_watch": ["test"],
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "node_args": "--harmony",
+      "merge_logs": true,
+      "cwd": "./"
+    }
+  ]
+}
