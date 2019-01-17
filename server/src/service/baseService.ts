@@ -35,7 +35,7 @@ export default class BaseService {
   }
 
   // 清理缓存
-  protected async clearCacheData(pattern: string): Promise<void> {
+  protected async clearCacheBase(pattern: string): Promise<void> {
     let keyList: string[] = await this.redis.keys(pattern);
     if (keyList && keyList.length > 0) {
       await this.redis.del(...keyList);

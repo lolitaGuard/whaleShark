@@ -2,9 +2,7 @@ import { ObjectId } from "mongodb";
 import BaseService from "../baseService";
 import * as keys from "../../redisKeys";
 
-import IUserInfo from "./iUserInfo";
-import IPriceItem from "./iPriceItem";
-import IInviteStatus from "./iInviteStatus";
+import IUser from "./iUser";
 
 export default class UserService extends BaseService {
   private static ins: UserService;
@@ -25,19 +23,30 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * 新增一个用户
+   * @param  {IUser} user 用户信息
+   * @returns Promise
+   */
+  async create(user: IUser): Promise<void> {
+    await this.mongo.getCollection("user").insertOne(user);
+  }
+
+  /**
    * 获取基本信息
-   * @param userId
+   * @param userId 用户编号
+   * @param isRefresh 是否重新从数据库读取,默认false
    * @returns Promise<IUserInfo>
    */
-  async getUserInfo(userId: string): Promise<IUserInfo> {
-    let rst: IUserInfo;
+  async find(userId: string, isRefresh: boolean = false): Promise<IUser> {
+    let rst: IUser;
     let key = keys.user(userId);
-    if (!(await this.redis.exists(key))) {
-      let userInfo = (await this.mongo
+    if (!(await this.redis.exists(key)) || isRefresh) {
+      let data = await this.mongo
         .getCollection("user")
-        .findOne({ userId })) as IUserInfo;
-      if (userInfo) {
-        await this.redis.set(key, JSON.stringify(userInfo));
+        .findOne({ _id: this.toObjectId(userId) });
+      if (data) {
+        data = this.renameId(data, "userId");
+        await this.redis.set(key, JSON.stringify(data));
       }
     }
 
@@ -51,95 +60,37 @@ export default class UserService extends BaseService {
    * @param userInfo 用户信息
    * @returns 是否更新成功
    */
-  async setUserInfo(userId: string, userInfo: IUserInfo): Promise<boolean> {
-    let rst: boolean;
-    this.mongo
+  async setInfo(userId: string, userInfo: Partial<IUser>): Promise<void> {
+    await this.mongo
       .getCollection("user")
-      .updateOne({ userId }, userInfo, { upsert: true });
+      .updateOne({ _id: this.toObjectId(userId) }, { $set: userInfo });
 
-    let key = keys.user(userId);
-    this.redis.set(key, JSON.stringify(userInfo));
-
-    rst = true;
-    return rst;
+    await this.refresh(userId);
   }
-
-  /**
-   * 获取约玩价格
-   * @param userId 用户编号
-   * @param priceName 价格名称,比如"约饭","约电影"
-   * @returns 价格
-   */
-  async getPrice(userId: string, priceName: string): Promise<number> {
-    let rst: number;
-    let key: string = keys.price(userId, priceName);
-    if (!(await this.redis.exists(key))) {
-      let priceItem: IPriceItem = await this.mongo
-        .getCollection("price")
-        .findOne({ userId, priceName });
-      let price: number = priceItem ? priceItem.price : -1;
-      this.redis.set(key, price.toString());
-    }
-
-    rst = parseInt(await this.redis.get(key));
-    return rst;
-  }
-
-  // 设置约玩价格
 
   /**
    * 设置约玩价格
    * @param userId 用户编号
-   * @param priceName 价格名称,比如"约饭","约电影"
-   * @param price 价格
+   * @param name 价格名称,比如"约饭","约电影"
+   * @param value 价格
    * @returns 是否设置成功
    */
-  async setPrice(
-    userId: string,
-    priceName: string,
-    price: number
-  ): Promise<boolean> {
-    let rst: boolean;
+  async setPrice(userId: string, name: string, value: number): Promise<void> {
+    await this.mongo
+      .getCollection("user")
+      .updateOne(
+        { _id: this.toObjectId(userId) },
+        { $pull: { priceList: { name } } }
+      );
 
-    this.mongo.getCollection("price").updateOne(
-      { userId, priceName },
-      {
-        price
-      },
-      { upsert: true }
-    );
+    await this.mongo
+      .getCollection("user")
+      .updateOne(
+        { _id: this.toObjectId(userId) },
+        { $push: { priceList: { name, value } } }
+      );
 
-    let key: string = keys.price(userId, priceName);
-    await this.redis.set(key, price.toString());
-
-    rst = true;
-    return rst;
-  }
-
-  // 获取约玩状态
-
-  /**
-   * 获取约玩状态
-   * @param userId 用户编号
-   * @returns 约玩状态
-   */
-  async getInviteStatus(userId: string): Promise<boolean> {
-    let rst: boolean;
-
-    let key = keys.inviteStatus(userId);
-    if (!(await this.redis.exists(key))) {
-      let item: IInviteStatus = await this.mongo
-        .getCollection("user")
-        .findOne({ userId });
-
-      let status: boolean = item ? item.status : false;
-
-      await this.redis.set(key, +status + "");
-    }
-
-    rst = (await this.redis.get(key)) === "true" ? true : false;
-
-    return rst;
+    await this.refresh(userId);
   }
 
   /**
@@ -148,17 +99,35 @@ export default class UserService extends BaseService {
    * @param status 约玩状态
    * @returns 是否成功设置
    */
-  async setInviteStatus(userId: string, status: boolean): Promise<boolean> {
-    let rst: boolean;
-
-    this.mongo
+  async setInviteStatus(userId: string, status: boolean): Promise<void> {
+    await this.mongo
       .getCollection("user")
-      .updateOne({ userId }, { status }, { upsert: true });
+      .updateOne(
+        { _id: this.toObjectId(userId) },
+        { $set: { inviteStatus: status } }
+      );
 
-    let key = keys.inviteStatus(userId);
-    await this.redis.set(key, status + "");
+    // clear cache
+    await this.refresh(userId);
+  }
 
-    rst = true;
-    return rst;
+  // 修改用户的coin
+  async addCoin(userId: string, coin: number): Promise<void> {
+    await this.mongo.getCollection("user").updateOne(
+      { _id: this.toObjectId(userId) },
+      {
+        $inc: { coin }
+      }
+    );
+
+    // clear cache
+    await this.refresh(userId);
+  }
+
+  // 清理缓存
+  private async refresh(userId: string) {
+    let data = await this.find(userId, true);
+    let key: string = keys.user(userId);
+    await this.redis.set(key, JSON.stringify(data));
   }
 }

@@ -189,6 +189,6 @@ export default class InviteService extends BaseService {
   // clear cache
   private async clearCache(userId: string): Promise<void> {
     let pattern: string = keys.inviteListOfSomeone(userId);
-    this.clearCache(pattern);
+    await this.clearCacheBase(pattern);
   }
 }
