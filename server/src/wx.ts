@@ -27,6 +27,8 @@ import axios from "axios";
 let { appId, appSecret, templateId } = config.wx;
 // 通过code获取微信用户openId
 async function getOpenId(code: string): Promise<string> {
+  // mock
+
   let ret: string;
   let url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code"`;
   try {

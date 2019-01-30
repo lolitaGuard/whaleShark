@@ -25,7 +25,7 @@ let getAxios = async () => {
   // token service
   let token = "";
   return axios.create({
-    baseURL: config.apiPrefix + ":" + config.port,
+    baseURL: `${config.protocol}://${config.host}:${config.port}`,
     headers: { token }
   });
 };

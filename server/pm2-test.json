@@ -1,13 +1,13 @@
 {
   "apps": [
     {
-      "name": "whaleshark",
+      "name": "whaleshark-test",
       "script": "./dist/app.js",
       "args": [],
       "watch": ["dist"],
       "ignore_watch": ["test"],
       "env": {
-        "NODE_ENV": "product"
+        "NODE_ENV": "test"
       },
       "node_args": "--harmony",
       "merge_logs": true,

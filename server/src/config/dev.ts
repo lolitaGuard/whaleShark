@@ -1,8 +1,5 @@
 import IConfig from "./IConfig";
 
-let conf: Partial<IConfig> = {
-  port: 3000,
-  apiPrefix: "http://localhost"
-};
+let conf: Partial<IConfig> = {};
 
 export default conf;

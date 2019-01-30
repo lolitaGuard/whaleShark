@@ -73,10 +73,12 @@ class Main {
       loger.info(`** start https server at port(${port}) **`);
       loger.info("=======================================");
 
-      if (process.env.NODE_ENV === "dev") {
-        loger.info(`visit url: ${config.apiPrefix}:${config.port}/test`);
-        loger.info(`visit url: ${config.apiPrefix}:${config.port}/test/db`);
-      }
+      loger.info(
+        `visit url: ${config.protocol}://${config.host}:${config.port}/test`
+      );
+      loger.info(
+        `visit url: ${config.protocol}://${config.host}:${config.port}/test/db`
+      );
     };
 
     if ("product" === process.env.NODE_ENV) {

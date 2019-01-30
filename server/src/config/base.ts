@@ -1,7 +1,8 @@
 import IConfig from "./IConfig";
 import { HOUR } from "../constant";
 let conf: IConfig = {
-  apiPrefix: "http://localhost",
+  protocol: "http",
+  host: "localhost",
   port: 3000,
   // mongo
   connectStr: "mongodb://localhost:27017",
@@ -23,32 +24,9 @@ let conf: IConfig = {
   tokenExpires: 2 * HOUR,
 
   // ******** special for project ********
-  // 照片打开的临界值
-  photoOpen: [0, 0, 0, 100, 300, 1000],
-
-  // 冠军临界热度
-  maxHot: 1000,
 
   mockToken: "sannian.zst",
   mockOpenId: "sannian.zst",
-
-  pointRate: 1,
-  coinRate: 100,
-
-  //
-  signPoint: 1,
-  invitePoint: 1,
-  moneyPointRate: 100,
-
-  // 每日签到最大次数
-  signCount: 1,
-  // 每日转发最大次数
-  inviteCount: 10,
-
-  // 注册获得的point
-  regPoint: 1,
-  // 注册获得的coin
-  regCoin: 0,
 
   // jwt
   jwt: {

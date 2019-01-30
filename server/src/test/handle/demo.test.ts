@@ -4,7 +4,9 @@ import config from "../../config";
 
 describe("demo.handle", () => {
   before(() => {
-    axios.defaults.baseURL = config.apiPrefix + ":" + config.port;
+    axios.defaults.baseURL = `${config.protocol}://${config.host}:${
+      config.port
+    }`;
   });
   it("test", async () => {
     let res = await axios.get("/test");

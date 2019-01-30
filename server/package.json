@@ -10,7 +10,8 @@
     "test": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/**/*.test.js",
     "test:invite": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/inviteService.test.js",
     "test:user": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/simple/userService.test.js",
-    "start-test-server": "cross-env NODE_ENV=test node ./dist/app",
+    "start-test-server": "npx pm2 start pm2-test.json",
+    "ssts": "npm run start-test-server",
     "test-handle": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/*.test.js",
     "clean": "rm -rf dist/*"
   },
