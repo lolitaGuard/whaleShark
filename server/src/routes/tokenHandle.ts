@@ -7,7 +7,7 @@ import { ErrCode } from "../errCode";
 
 export default function handle(app: express.Express) {
   app.get("/common/token/:code", async (req, res) => {
-    let rst: protocol.IResErr | protocol.ITokenRes;
+    let rst: protocol.ICommonRes<protocol.ITokenRes>;
 
     let code: string = req.params.code;
     let openId: string;
@@ -22,7 +22,8 @@ export default function handle(app: express.Express) {
     let expires: number = now + config.tokenExpires;
     let info = { userId: openId, expires };
     let token: string = config.jwt.prefix + jwtService.sign(info);
-    rst = { token, expires };
+    rst = ErrCode.noErr;
+    rst.data = { token, expires };
     res.json(rst);
   });
 }
