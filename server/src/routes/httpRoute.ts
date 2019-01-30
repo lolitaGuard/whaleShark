@@ -1,6 +1,7 @@
 import * as express from "express";
 // 路由
 import testHandle from "./testHandle";
+import tokenHandle from "./tokenHandle";
 // 错误
 import { ErrCode } from "../errCode";
 // jwt
@@ -19,6 +20,9 @@ export default function handler(app: express.Express) {
     }
     next();
   });
+
+  // token
+  tokenHandle(app);
 
   // 测试
   testHandle(app);
