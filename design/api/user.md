@@ -13,7 +13,7 @@ interface IInfoReq {
   // 昵称
   nickname: string;
   // 性别
-  gender: number;
+  gender: "male" | "female";
   // 生年
   birthYear: number;
   // 城市
@@ -60,8 +60,8 @@ interface IInfoReq {
 interface IInviteSettingReq {
   list: {
     // 约玩名称
-    // 约电影,约线上游戏,约旅游,约聚餐,约其他
-    type: "movie" | "game online" | "travel" | "dinner" | "other";
+    // 约电影,约唱歌,约旅游,约聚餐,约运动,约运动
+    type: "movie" | "ktv" | "travel" | "dinner" | "sport";
     // 价格
     price: number;
   }[];
@@ -76,12 +76,14 @@ interface IInviteSettingReq {
 
 ```typescript
 interface IInviteSettingReq {
-  // 约玩名称
-  // 约电影,约线上游戏,约旅游,约聚餐,约其他
-  type: "movie" | "game online" | "travel" | "dinner" | "other";
-  // 价格
-  // 特殊值-1表示反选该约玩项
-  price: number;
+  list: {
+    // 约玩名称
+    // 约电影,约唱歌,约旅游,约聚餐,约运动,约运动
+    type: "movie" | "ktv" | "travel" | "dinner" | "sport";
+    // 价格
+    // 特殊值-1表示反选该约玩项
+    price: number;
+  }[];
 }
 ```
 

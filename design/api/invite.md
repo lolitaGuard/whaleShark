@@ -33,11 +33,17 @@ interface IInviteRes {
 
 ### request
 
-`GET` `/invite/list/:pageIndex/:pageSize/:isAll`
+`POST` `/invite/list/:status/:pageIndex/:pageSize/:status/`
 
-- isAll
-  - true,表示查询所有约玩记录
-  - false,表示查询目前进行中的约玩记录
+```typescript
+interface IInviteListReq {
+  // 约会的状态
+  // 全部,待处理,进行中,已结单
+  status: "all" | "apply" | "dating" | "done";
+  pageIndex: number;
+  pageSize: number;
+}
+```
 
 ### response
 
@@ -50,8 +56,10 @@ interface IInviteListRes {
     logoUrl: string;
     // 昵称
     nickname: string;
+    // 性别
+    gender: "male" | "female";
     // 状态
-    // 申请中,进行中,已拒绝,成功结单,失败
+    // 申请中,进行中,已拒绝,成功结单,失败(纠纷)
     status: "apply" | "dating" | "reject" | "success" | "fail";
     // 类型
     type: "movie" | "game online" | "travel" | "dinner" | "other";
@@ -69,7 +77,7 @@ interface IInviteListRes {
 
 ### request
 
-`GET` `/invite/detail/:inviteId`
+`GET` `/invite/detail/:inviteId/`
 
 ### response
 
@@ -103,7 +111,7 @@ interface IInviteDetailRes {
 
 ## 处理约玩邀请(拒绝/接受)
 
-### request
+### request`
 
 `POST` `/invite/action/`
 
@@ -146,8 +154,8 @@ interface IInviteComfirm {
   // 处理结果
   // 约玩成功,约玩失败
   // 邀请者的确认
-  user: "success" | "fail";
+  user: "unkown" | "success" | "fail";
   // 被邀请者的确认
-  host: "success" | "fail";
+  host: "unkown" | "success" | "fail";
 }
 ```

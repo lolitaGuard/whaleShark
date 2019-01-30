@@ -9,7 +9,7 @@
 ### response
 
 ```typescript
-{
+interface IFollowListRes {
   list: {
     // logo
     logo: string;
@@ -18,8 +18,7 @@
     // 状态
     // '双向关注','关注了我','关注了他'
     status: "each" | "me" | "ta";
-  }
-  [];
+  }[];
 }
 ```
 

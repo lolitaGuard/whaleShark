@@ -14,6 +14,10 @@ interface IDailyStatisticsRes {
   logoUrl: string;
   // 昵称
   nickname: string;
+  // 城市
+  city: string;
+  // 性别
+  gender: "male" | "female";
   // 赞(总数)
   upvote: number;
   // 被关注/粉丝(总数)

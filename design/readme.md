@@ -15,7 +15,7 @@
 }
 ```
 
-**在 api 文档中,只写 response 的 data 部分**
+**在 api 文档中,其他的协议只写 response 的 data 部分**
 
 ## method 的一般约定
 
@@ -25,3 +25,5 @@
 | `POST`   | 修改      |
 | `PUT`    | 新增      |
 | `DELETE` | 删除      |
+
+**当搜索请求的参数很复杂的时候,GET 请求可以用 POST 来代替**

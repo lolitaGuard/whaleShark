@@ -9,7 +9,7 @@
 ### response
 
 ```typescript
-{
+interface IFavListRes {
   list: {
     // 收藏编号
     favId: string;
@@ -31,8 +31,7 @@
     favorite: number;
     // 转发数量
     share: number;
-  }
-  [];
+  }[];
 }
 ```
 
