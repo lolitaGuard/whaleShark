@@ -24,8 +24,15 @@ class Main {
     let app = this.app;
 
     // 中间件
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use((req, res, next) => {
+      if (["/common/upload/"].indexOf(req.path) >= 0) {
+        next();
+      } else {
+        bodyParser.json();
+        bodyParser.urlencoded({ extended: true });
+        next();
+      }
+    });
 
     // 过滤掉option
     app.use((req, res, next) => {

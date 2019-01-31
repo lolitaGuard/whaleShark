@@ -14,6 +14,10 @@ export interface ITokenRes {
   expires: number;
 }
 
+export interface IUploadRes {
+  list: string[];
+}
+
 export interface ICommonRes<T> extends IErrRes {
   data?: T;
 }

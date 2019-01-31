@@ -15,6 +15,11 @@ export class ErrCode {
   // 用户
   static notLogin: IErr = { code: 900, message: "用户未登录" };
   static userExists: IErr = { code: 901, message: "用户已经存在" };
+  // upload
+  static uploadFail: IErr = {
+    code: 1000,
+    message: "上传失败"
+  };
 
   // special for project
   static invalidAddPointType: IErr = {
