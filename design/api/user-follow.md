@@ -11,6 +11,8 @@
 ```typescript
 interface IFollowListRes {
   list: {
+    // 用户编号
+    userId: string;
     // logo
     logo: string;
     // 昵称

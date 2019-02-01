@@ -4,13 +4,13 @@
 
 ### request
 
-`POST` `/upload/` `multipart/form-data`
+`POST` `/common/upload/` `multipart/form-data`
 
 ### response
 
 ```typescript
 interface IUploadRes {
-  urlList: string[];
+  list: string[];
 }
 ```
 

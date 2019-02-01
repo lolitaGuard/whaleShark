@@ -26,6 +26,7 @@ interface IRecommendReq {
 ```typescript
 interface IRecommendRes {
   list: {
+    userId: string;
     // 图片url
     photoUrl: string;
     // 昵称
@@ -37,7 +38,7 @@ interface IRecommendRes {
     // 城市
     city: string;
     // 日记数量
-    dailyCount: number;
+    daily: number;
   }[];
 }
 ```
