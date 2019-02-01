@@ -4,9 +4,7 @@ export default interface IUser {
   // 昵称
   nickname: string;
   // 性别
-  // 0 男生
-  // 1 女生
-  gender: 0 | 1;
+  gender: "male" | "female";
   // 生年
   birthYear: number;
   // 城市
@@ -22,4 +20,15 @@ export default interface IUser {
   inviteStatus: boolean;
   // 约玩价格
   priceList: { name: string; value: number }[];
+  // 统计
+  // 点赞总数
+  upvote: number;
+  // 关注总数(粉丝总数)
+  follow: number;
+  // 热度
+  hot: number;
+  // 约玩总数
+  invite: number;
+  // 日记总数
+  daily: number;
 }

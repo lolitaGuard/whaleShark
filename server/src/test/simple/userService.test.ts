@@ -34,14 +34,19 @@ describe("userService", async function() {
 
     let user: IUser = {
       nickname,
-      gender: 0,
+      gender: "male",
       birthYear: 2000,
       city: "shanghai",
       wx: "",
       qq: "",
       coin: 0,
       inviteStatus: false,
-      priceList: []
+      priceList: [],
+      upvote: 0,
+      follow: 0,
+      hot: 0,
+      daily: 0,
+      invite: 0
     };
     await serviceIns.create(user);
 

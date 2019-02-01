@@ -13,13 +13,11 @@ export class ErrCode {
   static getOpenIdFail: IErr = { code: 801, message: "获取openid失败" };
   static getTokenFail: IErr = { code: 802, message: "获取token失败" };
   // 用户
+  static userNotExists: IErr = { code: 902, message: "不存在这个userId" };
   static notLogin: IErr = { code: 900, message: "用户未登录" };
   static userExists: IErr = { code: 901, message: "用户已经存在" };
   // upload
-  static uploadFail: IErr = {
-    code: 1000,
-    message: "上传失败"
-  };
+  static uploadFail: IErr = { code: 1000, message: "上传失败" };
 
   // special for project
   static invalidAddPointType: IErr = {
