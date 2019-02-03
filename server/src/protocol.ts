@@ -48,6 +48,8 @@ export interface IInfoRes {
   hot: number;
   // 总约玩
   invite: number;
+  // 硬币
+  coin: number;
 }
 
 // 设置基本信息

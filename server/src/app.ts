@@ -24,15 +24,21 @@ class Main {
     let app = this.app;
 
     // 中间件
-    app.use((req, res, next) => {
-      if (["/common/upload/"].indexOf(req.path) >= 0) {
-        next();
-      } else {
-        bodyParser.json();
-        bodyParser.urlencoded({ extended: true });
-        next();
-      }
-    });
+    // app.use((req, res, next) => {
+    //   console.log(req.path);
+    //   if (["/common/upload/"].indexOf(req.path) >= 0) {
+    //     next();
+    //   } else {
+    //     console.log("~~~~~~body parser");
+    //     bodyParser.json()(req, res, next);
+    //     bodyParser.urlencoded({ extended: true })(req, res, next);
+    //     // console.log("in body:", req.body);
+    //     // next();
+    //   }
+    // });
+
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     // 过滤掉option
     app.use((req, res, next) => {
@@ -55,19 +61,6 @@ class Main {
       );
       next();
     });
-
-    // token
-    app.use(
-      "/user/",
-      jwt({ secret: config.jwt.secret }),
-      (err, req: express.Request, res: express.Response, next) => {
-        if (err) {
-          res.status(500).json(ErrCode.invalidToken);
-          return;
-        }
-        next();
-      }
-    );
 
     // 路由
     httpRouteHandle(app);

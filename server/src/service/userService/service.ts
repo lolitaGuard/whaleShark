@@ -41,11 +41,9 @@ export default class UserService extends BaseService {
     let rst: IUser;
     let key = keys.user(userId);
     if (!(await this.redis.exists(key)) || isRefresh) {
-      let data = await this.mongo
-        .getCollection("user")
-        .findOne({ _id: this.toObjectId(userId) });
+      let data = await this.mongo.getCollection("user").findOne({ userId });
       if (data) {
-        data = this.renameId(data, "userId");
+        // data = this.renameId(data, "userId");
         await this.redis.set(key, JSON.stringify(data));
       }
     }
@@ -63,7 +61,7 @@ export default class UserService extends BaseService {
   async setInfo(userId: string, userInfo: Partial<IUser>): Promise<void> {
     await this.mongo
       .getCollection("user")
-      .updateOne({ _id: this.toObjectId(userId) }, { $set: userInfo });
+      .updateOne({ userId }, { $set: userInfo });
 
     await this.refresh(userId);
   }
@@ -78,17 +76,11 @@ export default class UserService extends BaseService {
   async setPrice(userId: string, name: string, value: number): Promise<void> {
     await this.mongo
       .getCollection("user")
-      .updateOne(
-        { _id: this.toObjectId(userId) },
-        { $pull: { priceList: { name } } }
-      );
+      .updateOne({ userId }, { $pull: { priceList: { name } } });
 
     await this.mongo
       .getCollection("user")
-      .updateOne(
-        { _id: this.toObjectId(userId) },
-        { $push: { priceList: { name, value } } }
-      );
+      .updateOne({ userId }, { $push: { priceList: { name, value } } });
 
     await this.refresh(userId);
   }
@@ -102,10 +94,7 @@ export default class UserService extends BaseService {
   async setInviteStatus(userId: string, status: boolean): Promise<void> {
     await this.mongo
       .getCollection("user")
-      .updateOne(
-        { _id: this.toObjectId(userId) },
-        { $set: { inviteStatus: status } }
-      );
+      .updateOne({ userId }, { $set: { inviteStatus: status } });
 
     // clear cache
     await this.refresh(userId);
@@ -114,7 +103,7 @@ export default class UserService extends BaseService {
   // 修改用户的coin
   async addCoin(userId: string, coin: number): Promise<void> {
     await this.mongo.getCollection("user").updateOne(
-      { _id: this.toObjectId(userId) },
+      { userId },
       {
         $inc: { coin }
       }

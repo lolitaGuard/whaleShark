@@ -14,6 +14,8 @@ describe("uploadService", async function() {
   // check:
   // 1. 资源可以被读到
   it("upload", async function() {
+    this.timeout(10 * 1000);
+
     try {
       let st = new Stream.PassThrough();
       st.end("hello world");

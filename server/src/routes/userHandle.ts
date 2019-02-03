@@ -18,8 +18,9 @@ const checkUserExists = async (userId: string) => {
 export default function handle(app: express.Express) {
   // 获取用户信息
   app.get("/user/info/:userId/", async (req, res) => {
+    debugger;
     let rst: protocol.ICommonRes<protocol.IInfoRes>;
-    let userId: string = req.param("userId");
+    let userId: string = req.params["userId"];
     let service = await UserService.getInstance();
     let info: IUser = await service.find(userId);
 
@@ -34,15 +35,16 @@ export default function handle(app: express.Express) {
       birthYear: info.birthYear,
       gender: info.gender,
       city: info.city,
-      wx: undefined,
-      qq: undefined,
+      wx: info.wx,
+      qq: info.qq,
       isInvite: info.inviteStatus,
       inviteList: info.priceList,
       upvote: info.upvote,
       follow: info.follow,
       daily: info.daily,
       hot: info.hot,
-      invite: info.invite
+      invite: info.invite,
+      coin: info.coin
     };
     res.json(rst);
   });
@@ -52,6 +54,13 @@ export default function handle(app: express.Express) {
     let rst: protocol.ICommonRes<{}>;
     let data: protocol.IInviteStatusSetReq = req.body;
     let userId: string = req["userId"];
+
+    let checkRst = await checkUserExists(userId);
+    if (checkRst) {
+      res.json(checkRst);
+      return;
+    }
+
     let service = await UserService.getInstance();
     await service.setInviteStatus(userId, data.isInvite);
 
@@ -59,6 +68,7 @@ export default function handle(app: express.Express) {
     res.json(rst);
   });
 
+  // 设置用户约玩价格
   app.post("/user/invite/setting/", async (req, res) => {
     let rst: protocol.ICommonRes<{}>;
     let data: protocol.IInviteSettingReq = req.body;

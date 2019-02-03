@@ -13,6 +13,6 @@ describe("token", async function() {
     let data: protocol.ITokenRes = res.data.data;
     let decode = jwtService.verify(data.token);
 
-    assert(decode && decode.userId === config.mockOpenId);
+    assert(decode && decode.userId === "puman");
   });
 });

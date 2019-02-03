@@ -2,7 +2,9 @@ import axios from "axios";
 import config from "../config";
 import Mongo from "../mongo";
 import Redis from "../redis";
+import * as protocol from "../protocol";
 import { openDbs, closeDbs } from "../dbManager";
+import utils from "../utils";
 
 let clearAll = async () => {
   let { mongo, redis } = await openDbs();
@@ -21,11 +23,20 @@ let clearAll = async () => {
   }
 };
 
-let getAxios = async () => {
+let getAxios = async (code: string) => {
   // token service
-  let token = "";
+  let baseURL = utils.getDefaultPrefix();
+  let axiosIns = axios.create({
+    baseURL
+  });
+  // return axiosIns;
+  let res = await axiosIns.get("/common/token/" + code);
+  let data: protocol.ITokenRes = res.data.data;
+  let token = data.token;
+  // console.log(token);
+
   return axios.create({
-    baseURL: `${config.protocol}://${config.host}:${config.port}`,
+    baseURL,
     headers: { token }
   });
 };

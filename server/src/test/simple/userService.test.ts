@@ -33,6 +33,7 @@ describe("userService", async function() {
     let rst: string;
 
     let user: IUser = {
+      userId: nickname,
       nickname,
       gender: "male",
       birthYear: 2000,
@@ -52,7 +53,7 @@ describe("userService", async function() {
 
     let data = await mongo.getCollection("user").findOne({ nickname });
     if (data) {
-      rst = data._id.toString();
+      rst = data.userId;
     }
 
     return rst;
