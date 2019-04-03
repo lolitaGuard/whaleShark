@@ -25,7 +25,7 @@ interface IInfoRes {
   // 是否开启约玩
   isInvite: boolean;
   // 约玩列表
-  inviteList: { name: string; value: number };
+  inviteList: { name: string; value: number }[];
   // 统计
   // 总关注
   follow: number;
@@ -37,6 +37,8 @@ interface IInfoRes {
   hot: number;
   // 总约玩
   invite: number;
+  // 硬币
+  coin: number;
 }
 ```
 
