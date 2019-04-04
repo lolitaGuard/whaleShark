@@ -22,6 +22,7 @@ class App extends Component {
     pages: [
       'pages/mine/mine',
       'pages/index/index',
+      'pages/appointment/appointment'
     ],
     window: {
       backgroundTextStyle: 'light',

@@ -5,13 +5,62 @@ import './mine.less';
 import message from '../../common/images/message.png';
 import setting from '../../common/images/setting.png';
 import female from '../../common/images/female.png';
-import pencel from '../../common/images/pencel.png'
+import pencel from '../../common/images/pencel.png';
+import send from '../../common/images/send.png';
+import money from '../../common/images/money.png';
+import collect from '../../common/images/collect.png';
+import diamond from '../../common/images/diamond.png';
+import custom from '../../common/images/custom.png';
+import share from '../../common/images/share.png'
+
 export default class Mine extends Component {
     config = {
         navigationBarTitleText: '我的'
     }
 
+    state = {
+        other: {
+            label: '颜值日记',
+            iconPath: pencel,
+            page: '/pages/appointment/appointment'
+        },
+        mainList: [{
+            label: '我的约玩',
+            iconPath: send,
+            page: '/pages/appointment/appointment'
+        }, {
+            label: '约玩订单',
+            iconPath: money,
+            page: '/pages/appointment/appointment'
+        }, {
+            label: '我的收藏',
+            iconPath: collect,
+            page: '/pages/appointment/appointment'
+        }, {
+            label: '我的硬币',
+            iconPath: diamond,
+            page: '/pages/appointment/appointment'
+        }],
+        serverList: [{
+            label: '联系客服',
+            iconPath: custom,
+            page: '/pages/appointment/appointment'
+        }, {
+            label: '转发有礼',
+            iconPath: share,
+            page: '/pages/appointment/appointment'
+        }]
+
+    }
+
+    more(url) {
+        Taro.navigateTo({
+            url: url
+        })
+    }
+
     render() {
+        let { mainList, serverList, other } = this.state;
         return (
             <View className='mine-page'>
                 <View className='mine-top'>
@@ -66,10 +115,48 @@ export default class Mine extends Component {
                 </View>
                 <View className='panel-list'>
                     <View className='panel-item'>
-                        <Panel label='颜值日记' iconPath={pencel} backgroudColor='#000'></Panel>
+                        <Panel
+                          label={other.label}
+                          iconPath={other.iconPath}
+                          page={other.page}
+                          backgroudColor='#000'
+                          noBorder onMore={(target) => this.more(target)}
+                        />
                     </View>
-                    <View className='panel-item'>
-                        <Panel label='颜值日记' iconPath={pencel} backgroudColor='#000'></Panel>
+                    {
+                        mainList.map((el, index) => {
+                            let noBorder = index == mainList.length - 1;
+                            return (
+                                <View className='panel-item' key={index}>
+                                    <Panel
+                                      label={el.label}
+                                      iconPath={el.iconPath}
+                                      noBorder={noBorder}
+                                      page={el.page}
+                                      onMore={(target) => this.more(target)}
+                                    />
+                                </View>
+                            )
+                        })
+                    }
+                    <View className='server-list'>
+                        {
+                            serverList.map((el, index) => {
+                                let noBorder = index == mainList.length - 1;
+                                return (
+                                    <View className='panel-item' key={index}>
+                                        <Panel
+                                          label={el.label}
+                                          iconPath={el.iconPath}
+                                          noBorder={noBorder}
+                                          backgroudColor='#C7C7C7'
+                                          page={el.page}
+                                          onMore={(target) => this.more(target)}
+                                        />
+                                    </View>
+                                )
+                            })
+                        }
                     </View>
                 </View>
             </View >
