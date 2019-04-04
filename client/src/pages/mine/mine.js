@@ -116,11 +116,11 @@ export default class Mine extends Component {
                 <View className='panel-list'>
                     <View className='panel-item'>
                         <Panel
-                          label={other.label}
-                          iconPath={other.iconPath}
-                          page={other.page}
-                          backgroudColor='#000'
-                          noBorder onMore={(target) => this.more(target)}
+                            label={other.label}
+                            iconPath={other.iconPath}
+                            page={other.page}
+                            backgroudColor='#000'
+                            noBorder onMore={(target) => this.more(target)}
                         />
                     </View>
                     {
@@ -129,11 +129,11 @@ export default class Mine extends Component {
                             return (
                                 <View className='panel-item' key={index}>
                                     <Panel
-                                      label={el.label}
-                                      iconPath={el.iconPath}
-                                      noBorder={noBorder}
-                                      page={el.page}
-                                      onMore={(target) => this.more(target)}
+                                        label={el.label}
+                                        iconPath={el.iconPath}
+                                        noBorder={noBorder}
+                                        page={el.page}
+                                        onMore={(target) => this.more(target)}
                                     />
                                 </View>
                             )
@@ -146,12 +146,12 @@ export default class Mine extends Component {
                                 return (
                                     <View className='panel-item' key={index}>
                                         <Panel
-                                          label={el.label}
-                                          iconPath={el.iconPath}
-                                          noBorder={noBorder}
-                                          backgroudColor='#C7C7C7'
-                                          page={el.page}
-                                          onMore={(target) => this.more(target)}
+                                            label={el.label}
+                                            iconPath={el.iconPath}
+                                            noBorder={noBorder}
+                                            backgroudColor='#C7C7C7'
+                                            page={el.page}
+                                            onMore={(target) => this.more(target)}
                                         />
                                     </View>
                                 )

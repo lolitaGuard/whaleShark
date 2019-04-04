@@ -1,0 +1,66 @@
+.appointmentItem{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 17PX 18PX 16PX;
+  background: #fff;
+  border-radius: 8PX;
+  .appointmentItem-image-wrapper{
+      width:72PX;
+      height:72PX;
+      margin-right: 18PX;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #FCEAE9;
+      .appointmentItem-image{
+        width:32PX;
+        height:32PX;
+    }
+  }
+
+  .appointmentItem-content{
+    padding: 4PX 0 3PX 18PX;
+    flex: 1;
+    border-left: 1PX #E6E6E6 solid;
+    .appointmentItem-top{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .appointmentItem-label{
+        font-size:16PX;
+        font-family:"PingFangSC-Medium";
+        font-weight:500;
+        color:#000;
+        line-height:22PX; 
+      }
+      .appointmentItem-button{
+        // display: flex;
+        // align-self: flex-start;
+        // margin-top: 2PX;
+      }
+    }
+    .appointmentItem-middle{
+      margin-top: 12PX;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .appointmentItem-input{
+        width: 58PX;
+        height: 30PX;
+        background: #F5F5F5;
+      }
+      .appointmentItem-unit{
+        margin-left: 10PX;
+        font-size:12PX;
+        font-family:"PingFang SC Medium";
+        color: #777;
+        line-height:22PX;
+      }
+    }
+  }
+
+}
+
