@@ -1,0 +1,51 @@
+page{
+    background: #000;
+}
+
+.filter-page{
+    padding: 40rpx  54rpx 0 56rpx;
+    .filter-content{
+        padding: 72rpx 0 86rpx 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        border-bottom: 1PX solid #4B4A4A;
+        &.last{
+            border-bottom:0 solid #4B4A4A;
+        }
+        .label{
+            font-size: 32rpx;
+            color: #fff;
+            line-height: 44rpx;
+            font-weight: 500;
+        }
+    }
+    .appointment-list{
+        padding-top: 14rpx;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        .appointment-item{
+            padding: 0 52rpx 0 52rpx;
+            height: 68rpx;
+            border-radius: 34rpx;
+            line-height: 68rpx;
+            font-size:28rpx;
+            font-family:"PingFangSC-Medium";
+            font-weight:500;
+            margin-right: 20rpx;
+            margin-bottom: 32rpx;
+            background: #4B4A4A;
+            color: #939393;
+            transition: all .6s;
+        }
+        .active{
+            box-sizing: border-box;
+            border: 1PX #E5747E solid;
+            background: #000;
+            color: #fff;
+        }
+    }
+}

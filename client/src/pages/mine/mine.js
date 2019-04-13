@@ -27,27 +27,33 @@ export default class Mine extends Component {
         mainList: [{
             label: '我的约玩',
             iconPath: send,
+            id: 0,
             page: '/pages/appointment/appointment'
         }, {
             label: '约玩订单',
             iconPath: money,
+            id: 1,
             page: '/pages/appointment/appointment'
         }, {
             label: '我的收藏',
             iconPath: collect,
+            id: 2,
             page: '/pages/appointment/appointment'
         }, {
             label: '我的硬币',
             iconPath: diamond,
+            id: 3,
             page: '/pages/appointment/appointment'
         }],
         serverList: [{
             label: '联系客服',
             iconPath: custom,
+            id: 0,
             page: '/pages/appointment/appointment'
         }, {
             label: '转发有礼',
             iconPath: share,
+            id: 1,
             page: '/pages/appointment/appointment'
         }]
 
@@ -127,7 +133,7 @@ export default class Mine extends Component {
                         mainList.map((el, index) => {
                             let noBorder = index == mainList.length - 1;
                             return (
-                                <View className='panel-item' key={index}>
+                                <View className='panel-item' key={el.id}>
                                     <Panel
                                         label={el.label}
                                         iconPath={el.iconPath}
@@ -144,7 +150,7 @@ export default class Mine extends Component {
                             serverList.map((el, index) => {
                                 let noBorder = index == mainList.length - 1;
                                 return (
-                                    <View className='panel-item' key={index}>
+                                    <View className='panel-item' key={el.id}>
                                         <Panel
                                             label={el.label}
                                             iconPath={el.iconPath}

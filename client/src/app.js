@@ -20,9 +20,11 @@ class App extends Component {
 
   config = {
     pages: [
+      'pages/friend/friend',
       'pages/appointment/appointment',
       'pages/mine/mine',
       'pages/index/index',
+      'pages/filter/filter'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -41,7 +43,7 @@ class App extends Component {
           iconPath: 'common/tabbar/home.png',
           selectedIconPath: 'common/tabbar/home_active.png'
         }, {
-          pagePath: 'pages/index/index',
+          pagePath: 'pages/friend/friend',
           iconPath: 'common/tabbar/friend.png',
           selectedIconPath: 'common/tabbar/friend_active.png',
           text: '交友'

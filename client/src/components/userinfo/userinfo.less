@@ -1,0 +1,52 @@
+.userinfo-wrapper{
+        padding-left: 42rpx;
+        padding-right: 32rpx;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .avatar-wrapper{
+            width: 168rpx;
+            height: 168rpx;
+            border-radius: 50%;
+            background:rgba(216,216,216,1);
+            border:4rpx solid rgba(0,0,0,1);
+            overflow: hidden;
+            flex-shrink: 0;
+            margin-right: 44rpx;
+            .avatar-image{
+                width: 168rpx;
+                height: 168rpx;
+            }
+        }
+        .userinfo{
+            margin-right: 86rpx;
+            .userinfo-username{
+                margin-bottom: 8rpx;
+                line-height:54px;
+                font-size:46px;
+            }
+           .userinfo-detail{
+                display: flex;
+                align-items: center;
+                line-height:34px;
+                .userinfo-age{
+                    font-family:"PingFangSC-Semibold";
+                    font-weight:600;
+                    font-size:24px;
+                    margin-right: 10rpx;
+                    color: #E17069
+                }
+                .userinfo-address{
+                    font-size:24px;
+                    font-family:"PingFangSC-Medium";
+                    font-weight:500;
+                }
+                .userinfo-sex{
+                    width: 16rpx;
+                    height: 26rpx;
+                    margin-right: 2PX;
+                    // background: #E17069
+                }
+            }
+        }
+    }
