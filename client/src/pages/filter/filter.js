@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import SwitchButton from '../../components/swtichButton/swtichButton';
 
 export default class Filter extends Component {
@@ -47,6 +47,11 @@ export default class Filter extends Component {
             list: list
         })
     }
+
+    confirm() {
+        Taro.navigateBack();
+    }
+
     render() {
         let { cityList, appointmentList } = this.list;
         let { cityMode, appointmentMode, list } = this.state
@@ -54,24 +59,27 @@ export default class Filter extends Component {
             <View className='filter-page'>
                 <View className='filter-content'>
                     <View className='label'><Text>是否同城</Text></View>
-                    <SwitchButton buttonList={cityList} active={cityMode} onSwitch={(cityMode) => this.citySwitch(cityMode)}></SwitchButton>
+                    <SwitchButton buttonList={cityList} active={cityMode} onSwitch={(mode) => this.citySwitch(mode)}></SwitchButton>
                 </View>
                 <View className='filter-content last'>
                     <View className='label'><Text>是否开启约玩</Text></View>
-                    <SwitchButton buttonList={appointmentList} active={appointmentMode} onSwitch={(appointmentMode) => this.appointmentSwitch(appointmentMode)}></SwitchButton>
+                    <SwitchButton buttonList={appointmentList} active={appointmentMode} onSwitch={(mode) => this.appointmentSwitch(mode)}></SwitchButton>
                 </View>
                 <View className='appointment-list'>
                     {
                         list.map((el) => {
                             return <View
-                                key={el.id}
-                                className={el.check ? 'appointment-item active' : 'appointment-item'}
-                                onClick={() => this.changeList(el)}
+                              key={el.id}
+                              className={el.check ? 'appointment-item active' : 'appointment-item'}
+                              onClick={() => this.changeList(el)}
                             >
                                 <Text>{el.label}</Text>
                             </View>
                         })
                     }
+                </View>
+                <View className='button' onClick={() => this.confirm()}>
+                    <Text>确认</Text>
                 </View>
             </View >
         )

@@ -1,8 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Button, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
 import Card from '../../components/card/card';
+import Modal from '../../components/modal/modal';
 import photo from '../../common/images/photo.png';
 import filter from '../../common/images/filter.png';
+
 import './friend.less';
 
 export default class Friend extends Component {
@@ -21,6 +23,7 @@ export default class Friend extends Component {
             photo: photo
         }],
         height: 0,
+        showFlag: false
     }
 
     componentDidMount() {
@@ -36,7 +39,6 @@ export default class Friend extends Component {
     }
 
     navigateFilter() {
-        console.log('navigateFilter')
         Taro.navigateTo({
             url: '/pages/filter/filter'
         })
@@ -57,19 +59,26 @@ export default class Friend extends Component {
         this.setState({ height });
     }
 
+    appointmentPlay() {
+        let { showFlag } = this.state;
+        this.setState({
+            showFlag: !showFlag
+        }, () => { console.log(this.state.showFlag) })
+    }
+
     render() {
-        let { height } = this.state;
+        let { height, list, showFlag } = this.state;
         return (
             <View className='friend-container'>
                 <Swiper className='swpier' style={{ height: height + 'px' }}
-                    onChange={(e) => { this.onChange(e) }}
+                  onChange={(e) => { this.onChange(e) }}
                 >
                     {
                         list.map(el => {
                             return (
                                 <SwiperItem key={el.name} className='card-container'>
                                     <View className='card-content'>
-                                        <Card photo={el.photo} />
+                                        <Card photo={el.photo} onAppointmentPlay={(id) => this.appointmentPlay(id)} />
                                     </View>
 
                                 </SwiperItem>
@@ -81,6 +90,9 @@ export default class Friend extends Component {
                 <View className='filter-wrapper' onClick={() => this.navigateFilter()}>
                     <Image src={filter} className='filter' />
                 </View>
+                <Modal isShow={showFlag}>
+                    123
+                </Modal>
             </View>
         )
     }

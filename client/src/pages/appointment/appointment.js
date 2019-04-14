@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Switch } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import AppointmentItem from '../../components/appointmentItem/appointmentItem';
 import meal from '../../common/images/meal.png';
 import travel from '../../common/images/travel.png';

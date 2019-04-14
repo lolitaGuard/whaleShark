@@ -3,14 +3,17 @@ page{
 }
 
 .filter-page{
-    padding: 40rpx  54rpx 0 56rpx;
+    padding: 40rpx  54rpx 150rpx 56rpx;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     .filter-content{
         padding: 72rpx 0 86rpx 0;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-
         border-bottom: 1PX solid #4B4A4A;
         &.last{
             border-bottom:0 solid #4B4A4A;
@@ -47,5 +50,16 @@ page{
             background: #000;
             color: #fff;
         }
+    }
+    .button{
+        background: #E17069;
+        color: #fff;
+        line-height: 102rpx;
+        height: 102rpx;
+        text-align: center;
+        border-radius: 52rpx;
+        position: fixed;
+        width: 660rpx;
+        bottom: 48rpx;
     }
 }

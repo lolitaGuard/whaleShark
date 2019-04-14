@@ -4,6 +4,9 @@ import Userinfo from '../../components/userinfo/userinfo';
 import './card.less';
 
 export default class Card extends Component {
+    appointmentPlay() {
+        this.props.onAppointmentPlay && this.props.onAppointmentPlay()
+    }
     render() {
         let { photo, username, sex, age, address, stateList } = this.props;
         return (
@@ -11,10 +14,10 @@ export default class Card extends Component {
                 <Image src={photo} className='card-image' />
                 <View className='card-info'>
                     <View className='userinfo'>
-                        <Userinfo color="#fff" />
+                        <Userinfo color='#fff' />
                     </View>
                     <View className='button'>
-                        <View className='card-button'>约玩</View>
+                        <View className='card-button' onClick={() => this.appointmentPlay()}>约玩</View>
                     </View>
                 </View>
             </View>
