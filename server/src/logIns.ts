@@ -1,15 +1,15 @@
 import * as log4js from "log4js";
-
+import * as path from "path";
 log4js.configure({
   appenders: [
-    // { type: "console" }
-    {
-      type: "dateFile",
-      filename: "./logs/app.log",
-      maxLogSize: 20480,
-      backups: 3,
-      category: "app"
-    }
+    { type: "console" }
+    // {
+    //   type: "dateFile",
+    //   filename: path.resolve(__dirname, "../logs/app.log"),
+    //   maxLogSize: 20480,
+    //   backups: 3,
+    //   category: "app"
+    // }
   ]
 });
 

@@ -18,7 +18,6 @@ const checkUserExists = async (userId: string) => {
 export default function handle(app: express.Express) {
   // 获取用户信息
   app.get("/user/info/:userId/", async (req, res) => {
-    debugger;
     let rst: protocol.ICommonRes<protocol.IInfoRes>;
     let userId: string = req.params["userId"];
     let service = await UserService.getInstance();
@@ -42,8 +41,9 @@ export default function handle(app: express.Express) {
       upvote: info.upvote,
       follow: info.follow,
       daily: info.daily,
-      hot: info.hot,
       invite: info.invite,
+      share: info.share,
+      hot: info.hot,
       coin: info.coin
     };
     res.json(rst);

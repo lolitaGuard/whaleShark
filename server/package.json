@@ -14,6 +14,7 @@
     "ssts": "npm run start-test-server",
     "test-handle": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/*.test.js",
     "test-handle:user": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/user.test.js",
+    "test-handle:userfav": "cross-env NODE_ENV=test npx mocha --require intelli-espower-loader dist/test/handle/**/userfav.test.js",
     "clean": "rm -rf dist/*"
   },
   "keywords": [],

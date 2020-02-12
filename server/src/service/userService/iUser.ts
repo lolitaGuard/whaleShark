@@ -25,10 +25,12 @@ export default interface IUser {
   upvote: number;
   // 关注总数(粉丝总数)
   follow: number;
-  // 热度
-  hot: number;
   // 约玩总数
   invite: number;
+  // 总转发
+  share: number;
+  // 热度
+  hot: number;
   // 日记总数
   daily: number;
 }

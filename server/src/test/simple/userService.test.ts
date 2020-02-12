@@ -47,6 +47,7 @@ describe("userService", async function() {
       follow: 0,
       hot: 0,
       daily: 0,
+      share: 0,
       invite: 0
     };
     await serviceIns.create(user);

@@ -78,6 +78,8 @@ function createDefaultUser(userId: string): IUser {
     hot: 0,
     // 总约玩
     invite: 0,
+    // 总转发
+    share: 0,
     // 硬币
     coin: 0
   };

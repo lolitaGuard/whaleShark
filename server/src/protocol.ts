@@ -1,4 +1,5 @@
 import { inflateRaw } from "zlib";
+import IFav from "./service/favService/iFav";
 
 // *** 基础response格式
 // *** 带有code[错误码]和msg[错误信息]
@@ -44,10 +45,12 @@ export interface IInfoRes {
   upvote: number;
   // 总日记数量
   daily: number;
-  // 总热度
-  hot: number;
+  // 总转发
+  share: number;
   // 总约玩
   invite: number;
+  // 总热度
+  hot: number;
   // 硬币
   coin: number;
 }
@@ -84,6 +87,11 @@ export interface IInviteSettingReq {
 export interface IInviteStatusSetReq {
   // 是否打开
   isInvite: boolean;
+}
+
+// 收藏列表
+export interface IFavListRes {
+  list: IFav[];
 }
 
 export interface ICommonRes<T> extends IErrRes {
